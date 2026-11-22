@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>My Tax Client Portal — Beta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE  calm, trustworthy back-office software for a tax office
+IDEA   the client's own white-label portal from their product video, made clickable
+PICTURE the working portal itself: three entrances, client file, back office
+COLOUR deep green + warm paper + gold accent (the video's palette), brand color editable
+TYPE   Source Serif 4 headings, Inter UI; LAYOUT sidebar app, stacks on phones
+*/
+:root{
+  --green:#1F4A35;--green-d:#14321F;--green-l:#2E6B4C;--tint:rgba(31,74,53,.08);
+  --cream:#F6F2E8;--paper:#FFFDF8;--gold:#C9A227;--ink:#1D2520;--muted:#66706A;--line:#E3DCCB;
+  --red:#B5432F;--amber:#B9811A;--ok:#2E7D4F;--blue:#2F5E8C;
+  --serif:'Source Serif 4',Georgia,serif;--ui:'Inter',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;background:var(--cream);color:var(--ink);font:15px/1.5 var(--ui);overflow-x:clip}
+a{color:var(--green-l)}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--serif);margin:0;line-height:1.15;text-wrap:balance}
+h1{font-size:30px}h2{font-size:22px}h3{font-size:17px}
+.muted{color:var(--muted)}.small{font-size:13px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.spread{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media(max-width:760px){.grid2,.grid3,.grid4{grid-template-columns:minmax(0,1fr)}}
+
+/* beta bar */
+.beta{position:sticky;top:0;z-index:50;background:#101A14;color:#E9E4D6;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:7px 14px;font-size:12.5px}
+.beta b{color:var(--gold);letter-spacing:.06em;font-size:11px}
+.beta button{background:#22302A;border:1px solid #3A4A42;color:#E9E4D6;border-radius:7px;padding:5px 10px;cursor:pointer;font-size:12.5px}
+.beta button:hover{border-color:var(--gold)}
+.beta button.on{background:var(--gold);color:#1B1B10;border-color:var(--gold);font-weight:600}
+.beta .sp{flex:1}
+
+/* buttons & inputs */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:40px;padding:8px 16px;border-radius:9px;border:1px solid var(--green);background:var(--green);color:#fff;font-weight:600;cursor:pointer;text-decoration:none;font-size:14px}
+.btn:hover{background:var(--green-d)}
+.btn.ghost{background:transparent;color:var(--green)}
+.btn.ghost:hover{background:var(--tint)}
+.btn.sm{min-height:32px;padding:5px 11px;font-size:13px}
+.btn.danger{background:var(--red);border-color:var(--red)}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#1B1B10}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.dark{background:#111;border-color:#111}
+label.f{display:block;font-size:13px;font-weight:600;color:#3A433D}
+label.f>input,label.f>select,label.f>textarea,label.f>.hint{display:block;margin-top:5px}
+label.f .req{color:var(--red)}
+input.i,select.i,textarea.i{width:100%;min-height:42px;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:#fff;font-size:15px;font-weight:400}
+input.i:focus,select.i:focus,textarea.i:focus,.btn:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+input.i.bad{border-color:var(--red)}input.i.good{border-color:var(--ok)}
+.hint{font-size:12px;font-weight:500;color:var(--muted)}
+.hint.bad{color:var(--red)}.hint.good{color:var(--ok)}
+
+/* cards & pills */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px}
+.card+.card{margin-top:14px}
+.sec{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;border-radius:20px;padding:2px 10px;background:var(--tint);color:var(--green);white-space:nowrap}
+.pill.red{background:rgba(181,67,47,.1);color:var(--red)}
+.pill.amber{background:rgba(185,129,26,.12);color:var(--amber)}
+.pill.ok{background:rgba(46,125,79,.12);color:var(--ok)}
+.pill.blue{background:rgba(47,94,140,.1);color:var(--blue)}
+.pill.gray{background:#EEEAE0;color:var(--muted)}
+.empty{padding:22px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;font-size:14px}
+
+/* gateway & auth */
+.gate{min-height:calc(100vh - 40px);background:radial-gradient(900px 500px at 50% 0%,var(--green-l),var(--green-d) 70%);color:#F3EFE3;padding:48px 18px;display:flex;flex-direction:column;align-items:center}
+.logoBox{width:56px;height:56px;border-radius:14px;background:#fff;color:var(--green);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:700;font-size:20px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.logoBox.sm{width:38px;height:38px;border-radius:10px;font-size:15px;box-shadow:none;border:1px solid var(--line)}
+.gate h1{font-size:clamp(32px,6vw,52px);letter-spacing:.02em;text-transform:uppercase;margin-top:18px;text-align:center}
+.gate .rule{width:56px;height:3px;background:var(--gold);margin:14px auto}
+.gate p.lead{max-width:640px;text-align:center;color:#D7DED6;font-size:16.5px}
+.doors{display:grid;grid-template-columns:repeat(3,minmax(0,260px));gap:14px;margin-top:30px}
+@media(max-width:860px){.doors{grid-template-columns:minmax(0,1fr);width:100%;max-width:420px}}
+.door{background:var(--paper);color:var(--ink);border-radius:14px;padding:18px;text-align:left;border:0;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.door:hover{transform:translateY(-2px)}
+.door .u{font-size:12px;color:var(--muted);margin-top:2px;font-family:ui-monospace,Menlo,monospace}
+.door p{margin:8px 0 0;font-size:13.5px;color:#3E4741}
+.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+.chips span{font-size:12px;border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:4px 11px;color:#E6EBE3}
+.auth{min-height:calc(100vh - 40px);display:flex;align-items:center;justify-content:center;padding:30px 16px;background:var(--cream)}
+.authBox{width:100%;max-width:400px;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:0 12px 40px rgba(20,50,31,.08)}
+.authBox .stack{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+.or{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}
+.or:before,.or:after{content:"";flex:1;height:1px;background:var(--line)}
+.code{font-size:26px;letter-spacing:12px;text-align:center;font-family:ui-monospace,Menlo,monospace}
+.demoNote{background:#FFF6DA;border:1px solid #EBD592;border-radius:9px;padding:9px 11px;font-size:13px;color:#5E4A0E}
+
+/* app shell */
+.shell{display:grid;grid-template-columns:236px minmax(0,1fr);min-height:calc(100vh - 40px)}
+.side{background:var(--green-d);color:#DCE4DC;padding:16px 12px;display:flex;flex-direction:column;gap:4px}
+.side .brand{display:flex;align-items:center;gap:10px;padding:4px 6px 16px;color:#fff}
+.side .brand .logoBox{width:36px;height:36px;font-size:14px;border-radius:9px;box-shadow:none}
+.side .brand b{font-family:var(--serif);font-size:15.5px;line-height:1.2}
+.side .brand small{display:block;font-size:11px;color:#A9B8AD;font-family:var(--ui)}
+.nav{display:flex;align-items:center;gap:9px;width:100%;text-align:left;border:0;background:transparent;color:#DCE4DC;padding:9px 10px;border-radius:9px;cursor:pointer;font-size:14px;min-height:40px}
+.nav:hover{background:rgba(255,255,255,.07)}
+.nav.on{background:rgba(255,255,255,.13);color:#fff;font-weight:600}
+.nav .ct{margin-left:auto;background:var(--gold);color:#1B1B10;font-size:11px;font-weight:700;border-radius:10px;padding:0 7px}
+.nav .ic{width:18px;text-align:center;opacity:.85}
+.side .foot{margin-top:auto;padding:12px 6px 0;border-top:1px solid rgba(255,255,255,.1);font-size:12px;color:#A9B8AD}
+.main{padding:22px clamp(14px,3vw,34px) 60px;max-width:1180px;width:100%}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.top .who{display:flex;align-items:center;gap:10px}
+.bell{position:relative;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--paper);cursor:pointer;font-size:16px}
+.bell i{position:absolute;top:-3px;right:-3px;background:var(--red);color:#fff;font-style:normal;font-size:10.5px;font-weight:700;border-radius:10px;padding:1px 6px}
+.drop{position:absolute;right:0;top:46px;width:min(340px,86vw);background:var(--paper);border:1px solid var(--line);border-radius:12px;box-shadow:0 18px 40px rgba(0,0,0,.15);z-index:30;max-height:380px;overflow:auto}
+.drop div{padding:10px 13px;border-bottom:1px solid var(--line);font-size:13px}
+.drop div.unread{background:#FBF6E6}
+@media(max-width:760px){
+  .beta{position:static}
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .side{flex-direction:row;overflow-x:auto;padding:8px;gap:4px}
+  .side .brand,.side .foot{display:none}
+  .nav{white-space:nowrap;width:auto;flex:none}
+}
+
+/* tracker */
+.tracker{display:flex;align-items:flex-start;margin:6px 0 2px}
+.tst{display:flex;flex-direction:column;align-items:center;gap:6px;width:92px;flex:none;text-align:center}
+.tdot{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--muted)}
+.tst.done .tdot{background:var(--green);border-color:var(--green);color:#fff}
+.tst.on .tdot{background:var(--gold);border-color:var(--gold);color:#1B1B10;box-shadow:0 0 0 5px rgba(201,162,39,.2)}
+.tst .tl{font-size:12.5px;font-weight:600;color:var(--muted)}
+.tst.on .tl,.tst.done .tl{color:var(--ink)}
+.tst .td{font-size:11px;color:var(--muted)}
+.tbar{flex:1;height:3px;background:var(--line);margin-top:14px;border-radius:3px}
+.tbar.done{background:var(--green)}
+@media(max-width:520px){.tst{width:64px}.tst .tl{font-size:11px}}
+
+/* checklist, files */
+.check{display:flex;flex-direction:column;gap:6px}
+.check button{display:flex;align-items:center;gap:9px;border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 11px;text-align:left;cursor:pointer;font-size:13.5px}
+.check button:hover{border-color:var(--gold)}
+.dotr{width:9px;height:9px;border-radius:50%;background:var(--red);flex:none}
+.meter{height:9px;border-radius:6px;background:#ECE6D7;overflow:hidden}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--green-l),var(--green));border-radius:6px}
+.files{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.file{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 10px;font-size:13px}
+.file .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.file .x{border:0;background:transparent;cursor:pointer;color:var(--muted);font-size:15px;min-width:28px;min-height:28px}
+.upl{display:flex;flex-direction:column;gap:8px;border:1.5px dashed #D3C9AF;border-radius:12px;padding:14px;background:#FFFCF3}
+.upl input[type=file]{font-size:13px;max-width:100%}
+.slot{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff}
+.slot.done{border-color:rgba(46,125,79,.4)}
+
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:#F3EEE1;padding:9px 12px;white-space:nowrap}
+td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:middle}
+tr.click{cursor:pointer}tr.click:hover td{background:#FBF8EF}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+
+/* kpis */
+.kpi{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.kpi .n{font-family:var(--serif);font-size:30px;font-weight:700;line-height:1}
+.kpi .l{font-size:12.5px;color:var(--muted);font-weight:600;margin-top:6px}
+
+/* messages */
+.thread{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow:auto;padding:4px}
+.msg{max-width:78%;padding:9px 12px;border-radius:14px;font-size:14px;white-space:pre-wrap}
+.msg.me{align-self:flex-end;background:var(--green);color:#fff;border-bottom-right-radius:4px}
+.msg.them{align-self:flex-start;background:#EFEBE0;border-bottom-left-radius:4px}
+.msg small{display:block;font-size:10.5px;opacity:.7;margin-top:3px}
+.compose{display:flex;gap:8px;margin-top:10px}
+
+/* slots */
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:7px}
+.slots button{min-height:40px;border:1px solid var(--line);background:#fff;border-radius:9px;cursor:pointer;font-size:13px;font-weight:600}
+.slots button.on{background:var(--green);color:#fff;border-color:var(--green)}
+.slots button:disabled{opacity:.35;text-decoration:line-through;cursor:not-allowed}
+
+/* tabs */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:14px 0 16px;overflow-x:auto}
+.tab{border:0;background:transparent;padding:10px 12px;cursor:pointer;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;font-size:14px}
+.tab.on{color:var(--green);border-bottom-color:var(--gold)}
+
+/* modal & toast */
+.ovl{position:fixed;inset:0;background:rgba(10,20,14,.45);z-index:80;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:var(--paper);border-radius:16px;max-width:560px;width:100%;padding:22px;max-height:88vh;overflow:auto}
+.toasts{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:90;display:flex;flex-direction:column;gap:8px;align-items:center;width:min(92vw,460px)}
+.toast{background:#13241A;color:#F1EDE1;padding:10px 16px;border-radius:10px;font-size:13.5px;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:tin .25s ease}
+@keyframes tin{from{opacity:0;transform:translateY(8px)}}
+@media(prefers-reduced-motion:reduce){.toast{animation:none}.door:hover{transform:none}}
+pre.csv{background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px;font-size:12px;max-height:280px;overflow:auto;white-space:pre}
+.trust li{margin:6px 0}
+.ai{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;color:#fff;background:linear-gradient(135deg,#F15368,#868BDF);border-radius:6px;padding:1px 6px}
+
+/* ===== public client site ===== */
+.pub{background:#fff;min-height:calc(100vh - 40px);color:#1F2A24}
+.phead{display:flex;align-items:center;gap:22px;padding:14px clamp(14px,4vw,44px);flex-wrap:wrap}
+.pbrand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}.pbrand b{font-family:var(--serif);font-size:19px}
+.plinks{display:flex;gap:22px}.plinks a{font-weight:600;color:#1F2A24;text-decoration:none;font-size:15.5px}.plinks a:hover{color:var(--green)}
+.phead .sp{flex:1}
+.lnk{border:0;background:none;color:var(--green);font-weight:600;cursor:pointer;font-size:14.5px;min-height:40px;padding:0 6px}
+.lnk.big{font-size:18px}.lnk:disabled{opacity:.3}
+.pbtn{display:inline-flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;min-height:46px;padding:10px 24px;border-radius:40px;border:2px solid var(--green);background:var(--green);color:#fff;font-weight:600;font-size:15.5px;cursor:pointer;text-decoration:none;line-height:1.15}
+.pbtn:hover{background:var(--green-d);border-color:var(--green-d)}
+.pbtn.ghost{background:#fff;color:var(--green)}.pbtn.ghost:hover{background:#F1F7F3}
+.pbtn.sm{min-height:40px;padding:7px 18px;font-size:14.5px}.pbtn.lg{min-height:56px;padding:12px 34px;font-size:17.5px}
+.pbtn.wide{width:100%}.pbtn.sq{border-radius:10px}.pbtn small{font-weight:500;font-size:12.5px;opacity:.9}
+.pbtn:disabled{background:#9DB5A8;border-color:#9DB5A8;cursor:not-allowed}
+.pbtn:focus-visible,.chipq:focus-visible,.choice:focus-visible,.slotb:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.logoBox.xs{width:24px;height:24px;border-radius:7px;font-size:10px;box-shadow:none;border:0;background:var(--green);color:#fff;display:inline-flex}
+.hero{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:22px;max-width:1280px;margin:6px auto 0;padding:0 clamp(14px,3vw,36px)}
+.heroCard{background:#F3F1EC;border-radius:26px;padding:clamp(24px,4vw,52px);position:relative;overflow:hidden;min-height:540px;display:flex;flex-direction:column;align-items:flex-start}
+.ph1{font-family:var(--ui);font-weight:500;font-size:clamp(34px,4.6vw,56px);letter-spacing:-.02em;line-height:1.05;max-width:620px}
+.plead{font-size:clamp(16px,1.6vw,19px);color:#36413A;max-width:560px;margin:16px 0 26px}
+.heroCard .art{width:100%;max-width:560px;margin-top:auto;align-self:center}
+.heroSide{display:flex;flex-direction:column;gap:22px}
+.siCard{border:1px solid #D9D6CF;border-radius:26px;padding:28px;background:#fff}
+.siCard.solo{max-width:440px;width:100%;box-shadow:0 18px 50px rgba(20,40,30,.08)}
+.siCard h2{font-family:var(--ui);font-weight:700;font-size:22px}
+.tiny{font-size:12.5px;color:var(--muted);margin:12px 0 0;text-align:center}
+.talk{background:#F3F1EC;border-radius:26px;padding:24px}.talk h3{font-family:var(--ui);font-size:19px}
+.band{padding:clamp(36px,5vw,72px) clamp(14px,4vw,44px)}
+.ph2{font-family:var(--ui);font-weight:500;font-size:clamp(28px,3.4vw,42px);letter-spacing:-.02em;text-align:center;margin-bottom:30px}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;max-width:1180px;margin:0 auto;align-items:end}
+.opt{border:1px solid #CFCCC4;border-radius:24px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+.opt.rec{border:2px solid #2F3533}.recBar{background:#2F3533;color:#fff;text-align:center;font-weight:700;padding:10px;letter-spacing:.06em;font-size:14px}
+.optIn{padding:26px 26px 22px;text-align:center}
+.optN{font-weight:700;font-size:20px;display:flex;align-items:center;justify-content:center;gap:8px}
+.optD{font-size:17px;margin:12px 0 18px;min-height:52px}
+.price{font-size:46px;font-weight:500;letter-spacing:-.02em;margin:2px 0 18px;font-variant-numeric:tabular-nums}
+.optL{list-style:none;margin:0;padding:20px 26px 26px;background:#F6F8F6;font-size:14.5px;flex:1}.optL li{margin:8px 0;color:#2E3A33}
+.steps4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;max-width:1180px;margin:0 auto}
+.st4{background:#fff;border-radius:20px;padding:22px;border:1px solid var(--line)}.st4 h3{font-family:var(--ui);font-size:17px;margin-top:12px}
+.num{display:inline-flex;width:34px;height:34px;border-radius:50%;background:var(--green);color:#fff;align-items:center;justify-content:center}
+.cmpT th{text-transform:none;letter-spacing:0;font-size:14px;color:#1F2A24;background:#fff;padding:16px 12px;white-space:normal}
+.cmpT td{padding:15px 12px;font-size:15px}.ck{display:inline-flex;width:28px;height:28px;border-radius:50%;border:1.8px solid #2F3533;align-items:center;justify-content:center;font-size:14px}
+.local{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:30px;align-items:center;max-width:1180px;margin:0 auto}
+.team{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}.tm{display:flex;flex-direction:column;align-items:center;gap:6px;background:#F3F1EC;border-radius:20px;padding:20px 22px;min-width:130px}
+.av{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:22px;flex:none}
+.av.xl{width:132px;height:132px;font-size:40px}.av.sq{width:220px;height:220px;border-radius:20px;font-size:64px}
+.av.xl .logoBox.xs{width:64px;height:64px;border-radius:16px;font-size:24px;background:#fff;color:var(--green)}
+.pfoot{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;padding:30px 16px;border-top:1px solid #E5E2DA;font-size:14px;color:var(--muted)}
+.pfoot a{color:var(--green)}
+.sibar{display:flex;gap:12px;align-items:center;justify-content:flex-end;padding:12px clamp(14px,4vw,40px);background:#EEF0EE;flex-wrap:wrap}
+.siWrap{display:flex;justify-content:center;padding:clamp(28px,7vh,90px) 16px}
+/* wizard */
+.wzTop{display:flex;align-items:center;justify-content:space-between;padding:12px clamp(14px,3vw,30px);gap:10px;flex-wrap:wrap}
+.prog{height:5px;background:#DCDDDF;margin-left:clamp(0px,14vw,340px)}.prog i{display:block;height:100%;background:linear-gradient(90deg,#76E2C3,var(--green-l));border-radius:0 4px 4px 0;transition:width .4s ease}
+.wz{max-width:900px;margin:0 auto;padding:clamp(26px,5vh,60px) 18px 60px}
+.wzH{font-family:var(--ui);font-weight:400;font-size:clamp(28px,3.6vw,42px);letter-spacing:-.015em;line-height:1.12}
+.chipsQ{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.chipq{border:1.6px solid #8D9296;border-radius:30px;padding:10px 20px;font-weight:700;background:#fff;cursor:pointer;font-size:15.5px;min-height:46px;color:#1F2A24}
+.chipq:hover{border-color:var(--green)}.chipq.on{background:#EAF7F1;border-color:var(--green);color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}
+.wzFoot{border-top:1px solid #DCDDDF;margin-top:44px;padding-top:22px;display:flex;justify-content:space-between;align-items:center}
+.choices{display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:30px}
+.choice{border:1.6px solid #9AA0A4;border-radius:18px;padding:22px;text-align:center;cursor:pointer;background:#fff;width:100%;max-width:540px;display:flex;flex-direction:column;gap:6px;font-size:15px}
+.choice b{font-size:17px}.choice.on{border-color:var(--green);background:#EFFAF5;box-shadow:inset 0 0 0 1.5px var(--green)}
+.pick{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(20px,5vw,64px);margin-top:30px;align-items:start}
+.cal{display:grid;grid-template-columns:repeat(7,44px);gap:6px;text-align:center}.cal b{font-size:14px;padding:6px 0}
+.cal button{width:44px;height:44px;border-radius:50%;border:0;background:none;cursor:pointer;font-size:15.5px;color:#1F2A24}
+.cal button:hover:not(:disabled){background:#EAF2EE}.cal button:disabled{text-decoration:line-through;color:#A8ACAF;cursor:not-allowed}.cal button.on{background:#2B3033;color:#fff}
+.slotGrid{display:flex;flex-wrap:wrap;gap:10px}.slotb{border:2px solid #2B3033;border-radius:8px;padding:9px 14px;font-weight:700;background:#fff;cursor:pointer;min-width:112px;min-height:46px;font-size:15px}
+.slotb.on{background:#2B3033;color:#fff}
+.pulse{position:relative;width:150px;height:150px;margin:30px auto 24px;display:flex;align-items:center;justify-content:center}
+.pulse:before,.pulse:after{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid var(--green-l);animation:ring 1.6s ease-out infinite;opacity:0}.pulse:after{animation-delay:.8s}
+@keyframes ring{0%{transform:scale(.8);opacity:.7}100%{transform:scale(1.35);opacity:0}}
+.matchList{display:inline-flex;flex-direction:column;gap:12px;text-align:left;font-weight:700;font-size:17px}
+.matchList div{opacity:0;animation:fin .4s ease forwards}.matchList div:first-letter{color:var(--green)}
+@keyframes fin{to{opacity:1}}
+.prepCard{display:flex;align-items:center;gap:16px;border:1px solid #D2D0CA;border-radius:20px;padding:16px 20px;cursor:pointer;width:100%;max-width:560px;margin:26px auto 0;background:#fff;text-align:left}
+.prepCard:hover{border-color:var(--green)}
+.apptSum{max-width:560px;margin:14px auto 0;background:#F3F1EC;border-radius:14px;padding:12px 16px;font-size:14.5px}
+.formCol{max-width:560px;margin:24px auto 0;display:flex;flex-direction:column;gap:16px}
+.formCol .i{min-height:48px}
+.pm{display:grid;grid-template-columns:220px minmax(0,1fr);gap:28px}.tagS{background:#EEEAE0;border-radius:8px;padding:5px 11px;font-size:13px;font-weight:600}
+@media(prefers-reduced-motion:reduce){.pulse:before,.pulse:after{animation:none}.matchList div{animation:none;opacity:1}}
+@media(max-width:900px){.hero,.local{grid-template-columns:minmax(0,1fr)}.heroCard{min-height:0}.opts,.steps4{grid-template-columns:minmax(0,1fr)}.plinks{display:none}.pick{grid-template-columns:minmax(0,1fr)}.pm{grid-template-columns:minmax(0,1fr)}.av.sq{width:120px;height:120px;font-size:40px}.prog{margin-left:0}.optD{min-height:0}}
+@media(max-width:420px){.cal{grid-template-columns:repeat(7,38px);gap:4px}.cal button{width:38px;height:38px}.phead{gap:10px}.phead .pbtn{padding:7px 14px;min-height:40px;font-size:14px}}
+</style>
+</head>
+<body>
+<div class="beta" id="beta"></div>
+<div id="app"></div>
+<div id="modal"></div>
+<div class="toasts" id="toasts"></div>
+
+<script>
+{
+/* ================== CONSTANTS ================== */
+const KEY='mtcp_beta_v4';
+const AUTO_MS=30*60*1000;          // 30 minutes after a complete submission → In preparation
+const REMIND_MS=3*24*3600*1000;    // reminder cooldown: 3 days
+const DAY=24*3600*1000;
+const STAGES=['Document intake','In preparation','Finished','Filed'];
+const STATUS={single:'Single',mfj:'Married filing jointly',mfs:'Married filing separately',hoh:'Head of household',qss:'Qualifying surviving spouse'};
+const FORM_TYPES=['W-2','1099-NEC','1099-MISC','1099-K','1099-INT','1099-DIV','1099-R','1099-G','SSA-1099','1098 (Mortgage interest)','1098-T (Tuition)','1098-E (Student loan)','1095-A (Marketplace)','Mortgage statement','Other IRS form'];
+const IRS=[['Form 1040','about-form-1040'],['Form W-2','about-form-w-2'],['Form 1099-NEC','about-form-1099-nec'],['Form 1099-MISC','about-form-1099-misc'],['Form 1099-K','about-form-1099-k'],['Form 1099-INT','about-form-1099-int'],['Form 1099-DIV','about-form-1099-div'],['Form 1099-R','about-form-1099-r'],['Form 1098 (Mortgage interest)','about-form-1098'],['Form 1098-T (Tuition)','about-form-1098-t'],['Form 1098-E (Student loan interest)','about-form-1098-e'],['Form 1095-A (Marketplace)','about-form-1095-a']];
+const BANKS=['Chase','Bank of America','Wells Fargo','Capital One','Navy Federal Credit Union','USAA','Frost Bank','Other bank or credit union'];
+const REL_DOCS=['Birth certificate','Custody document','Court order'];
+const ADDR=['5373 W Alabama St, Houston, TX 77056','1200 Smith St, Houston, TX 77002','8800 Westheimer Rd, Houston, TX 77063','2410 Main St, Katy, TX 77494','15500 Champion Forest Dr, Spring, TX 77379','701 Texas Ave, Houston, TX 77002','4300 Bissonnet St, Bellaire, TX 77401','11550 Fuqua St, Houston, TX 77034'];
+
+/* ================== HELPERS ================== */
+const now=()=>Date.now();
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtD=t=>t?new Date(t).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';
+const fmtDT=t=>t?new Date(t).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'—';
+const fmtSize=b=>b>1e6?(b/1e6).toFixed(1)+' MB':Math.max(1,Math.round(b/1e3))+' KB';
+const dayStr=t=>new Date(t).toISOString().slice(0,10);
+// "encryption" stand-in for the beta: value stored obfuscated, only last 4 kept readable
+const enc=v=>{const d=String(v).replace(/\D/g,'');return d?{l4:d.slice(-4),e:btoa(d.split('').reverse().join(''))}:null;};
+const dec=o=>o?atob(o.e).split('').reverse().join(''):'';
+const maskSSN=o=>o?'•••-••-'+o.l4:'';
+const maskAcct=o=>o?'••••'+o.l4:'';
+function validRouting(r){const d=String(r||'').replace(/\D/g,'');if(d.length!==9)return false;const n=d.split('').map(Number);return (3*(n[0]+n[3]+n[6])+7*(n[1]+n[4]+n[7])+(n[2]+n[5]+n[8]))%10===0;}
+function get(o,p){return p.split('.').reduce((a,k)=>a==null?a:a[k],o);}
+function set(o,p,v){const k=p.split('.');const last=k.pop();const t=k.reduce((a,x)=>a[x],o);t[last]=v;}
+
+/* ================== STATE ================== */
+let S;
+const UI={screen:'home',tab:'overview',cid:null,ctab:'overview',q:'',fAgent:'',fStage:'',bell:false,authStep:'email',authEmail:'',authCode:'',report:'missing',apptDate:'',apptSlot:'',fails:0,lockUntil:0};
+
+function blankClient(email,agentId){
+  return {id:uid(),email,agentId,created:now(),notify:'portal',ai:false,
+    info:{tp:{first:'',last:'',ssn:null,dob:'',phone:'',occupation:'',ippin:''},status:'',address:'',marketplace:'no',
+          sp:{first:'',last:'',ssn:null,dob:'',occupation:'',ippin:''},deps:[]},
+    docs:{forms:[],photo:[],ss:[],spPhoto:[],spSS:[],dep:[[],[],[],[],[]],rel:[]},
+    bank:{method:'',bank:'',type:'Checking',routing:'',acct:null,voidCheck:[]},
+    stage:0,stageAt:[now(),null,null,null],submittedAt:null,result:null,
+    messages:[],appts:[],referrals:[],lastContact:null,nextFollow:null,deadline:null,lastReminder:null,notes:'',log:[{at:now(),t:'Client account created'}]};
+}
+const F=(name,days=0)=>({id:uid(),name,size:180000+Math.floor(Math.random()*1.6e6),at:now()-days*DAY});
+function seed(){
+  const agents=[
+    {id:'a1',name:'Ana Morales',email:'ana@brightpathtax.com',pass:'demo1234',active:true},
+    {id:'a2',name:'David Chen',email:'david@brightpathtax.com',pass:'demo1234',active:true},
+    {id:'a3',name:'Luis Reyes',email:'luis@brightpathtax.com',pass:'demo1234',active:true}];
+  const mk=(o)=>{const c=blankClient(o.email,o.agent);Object.assign(c.info.tp,o.tp);c.info.status=o.status;c.info.address=o.address||ADDR[1];
+    if(o.sp)Object.assign(c.info.sp,o.sp);c.info.deps=o.deps||[];c.created=now()-(o.age||10)*DAY;c.log=[{at:c.created,t:'Client account created'}];return c;};
+  const full=(c,forms)=>{c.docs.forms=forms.map(([t,n])=>Object.assign(F(n,6),{type:t}));c.docs.photo=[F('drivers-license.jpg',6)];c.docs.ss=[F('ss-card.jpg',6)];
+    if(c.info.status==='mfj'){c.docs.spPhoto=[F('spouse-id.jpg',6)];c.docs.spSS=[F('spouse-ss.jpg',6)];}
+    c.info.deps.forEach((d,k)=>c.docs.dep[k]=[F(`ss-${d.name.split(' ')[0].toLowerCase()}.jpg`,6)]);
+    c.bank={method:'dd',bank:'Chase',type:'Checking',routing:'111000614',acct:enc('483920175512'),voidCheck:[F('void-check.jpg',6)]};};
+  const setStage=(c,s,daysAgo)=>{c.stage=s;for(let i=1;i<=s;i++)c.stageAt[i]=now()-(daysAgo-i)*DAY;c.submittedAt=now()-daysAgo*DAY;};
+
+  const maria=mk({email:'maria@example.com',agent:'a1',status:'mfj',age:5,tp:{first:'Maria',last:'Lopez',ssn:enc('123456789'),dob:'1988-04-12',phone:'(713) 555-0142',occupation:'Dental assistant'},
+    sp:{first:'Carlos',last:'Lopez',ssn:enc('123456780'),dob:'1986-09-02',occupation:'Delivery driver'},
+    deps:[{name:'Emma Lopez',ssn:enc('123450001'),dob:'2015-06-20',rel:'Daughter',months:'12'},{name:'Leo Lopez',ssn:enc('123450002'),dob:'2019-01-11',rel:'Son',months:'12'}]});
+  maria.docs.forms=[Object.assign(F('w2-maria-2025.pdf',3),{type:'W-2'})];maria.docs.photo=[F('maria-dl.jpg',3)];maria.docs.ss=[F('maria-ss.jpg',3)];maria.docs.dep[0]=[F('ss-emma.jpg',2)];
+  maria.bank={method:'dd',bank:'Chase',type:'Checking',routing:'111000614',acct:enc('483920175512'),voidCheck:[]};
+  maria.messages=[{from:'client',text:'Hi! Do I need to upload my husband\'s DoorDash form too?',at:now()-2*DAY},{from:'office',who:'Ana Morales',text:'Yes please — upload his 1099-NEC under Tax forms. Thanks Maria!',at:now()-2*DAY+3600e3}];
+  maria.lastContact=now()-2*DAY;maria.nextFollow=now()+1*DAY;maria.deadline=now()+9*DAY;
+  maria.appts=[{id:uid(),date:dayStr(nextWorkday(3)),time:'11:30',status:'requested',at:now()-DAY}];
+  maria.referrals=[{name:'Diana Torres',contact:'(281) 555-0199',at:now()-DAY,status:'Invited'}];
+
+  const james=mk({email:'james@example.com',agent:'a2',status:'single',age:12,tp:{first:'James',last:'Carter',ssn:enc('223456789'),dob:'1979-02-15',phone:'(832) 555-0107',occupation:'HVAC technician'}});
+  full(james,[['W-2','w2-carter.pdf'],['1099-INT','1099-int-ally.pdf']]);setStage(james,1,3);james.lastContact=now()-3*DAY;james.nextFollow=now()-1*DAY;james.deadline=now()+4*DAY;
+
+  const sofia=mk({email:'sofia@example.com',agent:'a1',status:'hoh',age:15,tp:{first:'Sofia',last:'Nguyen',ssn:enc('323456789'),dob:'1991-11-30',phone:'(346) 555-0170',occupation:'Nurse'},
+    deps:[{name:'Mia Nguyen',ssn:enc('323450001'),dob:'2017-03-08',rel:'Daughter',months:'12'}]});
+  full(sofia,[['W-2','w2-memorial.pdf'],['1098-T (Tuition)','1098t-hcc.pdf']]);setStage(sofia,2,6);sofia.lastContact=now()-1*DAY;sofia.deadline=now()+2*DAY;
+
+  const robert=mk({email:'robert@example.com',agent:'a2',status:'mfj',age:30,tp:{first:'Robert',last:'Hayes',ssn:enc('423456789'),dob:'1970-07-07',phone:'(713) 555-0188',occupation:'Retired'},sp:{first:'Janet',last:'Hayes',ssn:enc('423456780'),dob:'1972-05-19',occupation:'Teacher'}});
+  full(robert,[['1099-R','1099r-fidelity.pdf'],['SSA-1099','ssa1099.pdf'],['W-2','w2-janet.pdf'],['1098 (Mortgage interest)','1098-mortgage.pdf']]);setStage(robert,3,14);robert.result='accepted';robert.lastContact=now()-4*DAY;
+
+  const jorge=mk({email:'jorge@example.com',agent:'a1',status:'',age:1,tp:{first:'Jorge',last:'Ramírez',ssn:null,dob:'',phone:'(281) 555-0133',occupation:''}});
+  jorge.deadline=now()+3*DAY;jorge.nextFollow=now();jorge.messages=[{from:'client',text:'Hola, ¿qué documentos necesito subir?',at:now()-3600e3,unread:true}];
+
+  const linda=mk({email:'linda@example.com',agent:'a3',status:'single',age:25,tp:{first:'Linda',last:'Park',ssn:enc('523456789'),dob:'1995-08-21',phone:'(832) 555-0161',occupation:'Designer'}});
+  full(linda,[['1099-NEC','1099nec-studio.pdf'],['1099-K','1099k-etsy.pdf']]);setStage(linda,3,10);linda.result='rejected';linda.lastContact=now()-2*DAY;linda.nextFollow=now()-2*DAY;
+
+  const kevin=mk({email:'kevin@example.com',agent:'a3',status:'single',age:2,tp:{first:'Kevin',last:'Brooks',ssn:enc('623456789'),dob:'1990-01-05',phone:'(713) 555-0125',occupation:'Warehouse lead'}});
+  full(kevin,[['W-2','w2-amazon.pdf']]);kevin.submittedAt=now()-25*60*1000;kevin.log.push({at:kevin.submittedAt,t:'Client submitted a complete portal'});
+
+  const ashley=mk({email:'ashley@example.com',agent:'a2',status:'single',age:20,tp:{first:'Ashley',last:'Moore',ssn:enc('723456789'),dob:'1998-12-01',phone:'(346) 555-0114',occupation:'Server'}});
+  full(ashley,[['W-2','w2-restaurant.pdf'],['1095-A (Marketplace)','1095a.pdf']]);ashley.info.marketplace='yes';setStage(ashley,3,8);ashley.result='correction';ashley.lastContact=now()-5*DAY;ashley.nextFollow=now()+2*DAY;
+
+  return {settings:{name:'Bright Path Tax',initials:'BP',color:'#1F4A35',domain:'portal.brightpathtax.com',hours:'Mon–Sat, 9 AM–6 PM',reward:'$25',phone:'(713) 555-0100',price0:'$149',price1:'$199',price2:'$299'},
+    agents,clients:[maria,james,sofia,robert,jorge,linda,kevin,ashley],
+    notes:[{id:uid(),to:'office',t:'Kevin Brooks submitted a complete portal',at:kevin.submittedAt,read:false},{id:uid(),to:'office',t:'Maria Lopez requested an appointment',at:now()-DAY,read:false},{id:uid(),to:'office',t:'New message from Jorge Ramírez',at:now()-3600e3,read:false}],
+    session:null};
+}
+function nextWorkday(n){let t=now(),c=0;while(c<n){t+=DAY;if(new Date(t).getDay()!==0)c++;}return t;}
+function load(){try{const r=localStorage.getItem(KEY);if(r){S=JSON.parse(r);return;}}catch(e){}S=seed();save();}
+let saveT;function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}},150);}
+
+/* ================== DOMAIN ================== */
+const agentOf=id=>S.agents.find(a=>a.id===id);
+const client=id=>S.clients.find(c=>c.id===id);
+const cname=c=>((c.info.tp.first||'')+' '+(c.info.tp.last||'')).trim()||c.email;
+const me=()=>S.session&&S.session.role==='client'?client(S.session.id):null;
+function scope(){const s=S.session;if(!s)return[];return s.role==='admin'?S.clients:S.clients.filter(c=>c.agentId===s.id);}
+function log(c,t){c.log.unshift({at:now(),t});}
+function notify(to,t,email){S.notes.unshift({id:uid(),to,t,at:now(),read:false,email:!!email});}
+function missing(c){
+  const m=[],i=c.info,t=i.tp,d=c.docs;
+  const add=(label,tab)=>m.push({label,tab});
+  if(!t.first||!t.last)add('Taxpayer name','info');
+  if(!t.ssn)add('Taxpayer SSN or ITIN','info');
+  if(!t.dob)add('Taxpayer date of birth','info');
+  if(!t.phone)add('Phone number','info');
+  if(!i.status)add('Filing status','info');
+  if(!i.address)add('Home address','info');
+  if(i.status==='mfj'){if(!i.sp.first||!i.sp.last)add('Spouse name','info');if(!i.sp.ssn)add('Spouse SSN or ITIN','info');}
+  i.deps.forEach((x,k)=>{if(!x.name||!x.ssn||!x.rel)add(`Dependent ${k+1} details`,'info');});
+  if(!d.forms.some(f=>f.type!=='Other IRS form'&&f.type!=='Mortgage statement'))add('At least one income form (W-2 or 1099)','forms');
+  if(i.marketplace==='yes'&&!d.forms.some(f=>f.type.startsWith('1095-A')))add('Form 1095-A (Marketplace insurance)','forms');
+  if(!d.photo.length)add('Photo ID','ids');
+  if(!d.ss.length)add('Taxpayer Social Security card','ids');
+  if(i.status==='mfj'){if(!d.spPhoto.length)add('Spouse photo ID','ids');if(!d.spSS.length)add('Spouse Social Security card','ids');}
+  i.deps.forEach((x,k)=>{if(!(d.dep[k]||[]).length)add(`SS card — ${x.name||'Dependent '+(k+1)}`,'ids');});
+  const b=c.bank;
+  if(!b.method)add('Refund method','deposit');
+  else if(b.method==='dd'){if(!b.bank)add('Bank','deposit');if(!validRouting(b.routing))add('Valid routing number','deposit');if(!b.acct)add('Account number','deposit');if(!b.voidCheck.length)add('Voided check','deposit');}
+  return m;
+}
+function totalReqs(c){return 14+(c.info.status==='mfj'?4:0)+c.info.deps.length*2+(c.info.marketplace==='yes'?1:0);}
+function pct(c){const t=totalReqs(c);return Math.round(Math.max(0,t-missing(c).length)/t*100);}
+function setStage(c,s,by){c.stage=s;c.stageAt[s]=now();log(c,`Status → ${STAGES[s]}${by?' ('+by+')':''}`);
+  notify('client:'+c.id,`Your return status is now: ${STAGES[s]}`,c.notify==='email');}
+function tick(){let ch=false;S.clients.forEach(c=>{if(c.stage===0&&c.submittedAt&&now()-c.submittedAt>=AUTO_MS&&!missing(c).length){setStage(c,1,'automatic, 30 min after complete submission');ch=true;}});if(ch){save();render();}}
+function unreadFor(role,id){return S.notes.filter(n=>!n.read&&(role==='client'?n.to==='client:'+id:(n.to==='office'||n.to==='agent:'+id))).length;}
+function myNotes(){const s=S.session;if(!s)return[];return S.notes.filter(n=>s.role==='client'?n.to==='client:'+s.id:s.role==='admin'?(n.to==='office'||n.to.startsWith('agent:')):(n.to==='agent:'+s.id||(n.to==='office'&&noteForAgent(n,s.id))));}
+function noteForAgent(n,aid){return S.clients.some(c=>c.agentId===aid&&n.t.includes(cname(c)));}
+function takenSlots(date,except){const t=new Set();S.clients.forEach(c=>c.appts.forEach(a=>{if(a.date===date&&a.status!=='declined'&&a.status!=='cancelled'&&a.id!==except)t.add(a.time);}));return t;}
+
+/* ================== UI PRIMITIVES ================== */
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.getElementById('toasts').appendChild(d);setTimeout(()=>d.remove(),3400);}
+function modal(html){document.getElementById('modal').innerHTML=html?`<div class="ovl" data-act="closeModalBg"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`:'';}
+const pillStage=c=>{if(c.stage===3){const r={accepted:['ok','Filed · Accepted'],rejected:['red','Filed · Rejected'],correction:['amber','Needs correction']}[c.result]||['blue','Filed'];return `<span class="pill ${r[0]}">${r[1]}</span>`;}
+  return `<span class="pill ${['gray','amber','blue'][c.stage]}">${STAGES[c.stage]}</span>`;};
+function tracker(c){return `<div class="tracker">${STAGES.map((s,i)=>`${i?`<div class="tbar ${c.stage>=i?'done':''}"></div>`:''}<div class="tst ${c.stage>i||(c.stage===3&&i===3)?'done':c.stage===i?'on':''}"><div class="tdot">${c.stage>i||(c.stage===3&&i===3)?'✓':i+1}</div><div class="tl">${s}</div><div class="td">${c.stageAt[i]?fmtD(c.stageAt[i]):''}</div></div>`).join('')}</div>`;}
+function fileList(arr,path,canDel=true,office=false){if(!arr.length)return '<div class="hint" style="margin-top:6px">No files yet</div>';
+  return `<div class="files">${arr.map(f=>`<div class="file"><span>📄</span><span class="nm">${f.type?`<b>${esc(f.type)}</b> · `:''}${esc(f.name)}</span><span class="muted small">${fmtSize(f.size)} · ${fmtD(f.at)}</span>${office?`<button class="btn ghost sm" data-act="dl" data-n="${esc(f.name)}">Open</button>`:''}${canDel?`<button class="x" title="Remove" data-act="rmFile" data-p="${path}" data-id="${f.id}">✕</button>`:''}</div>`).join('')}</div>`;}
+function logo(cls=''){return `<div class="logoBox ${cls}">${esc(S.settings.initials)}</div>`;}
+
+/* ================== BETA BAR ================== */
+function betaBar(){const s=S.session;const r=s?s.role:'';
+  document.getElementById('beta').innerHTML=`<b>BETA PROTOTYPE</b><span style="opacity:.75">Demo data · saved in this browser only</span><span class="sp"></span>
+  <button data-act="quick" data-r="home" class="${['home','start','signin'].includes(UI.screen)?'on':''}">Client website</button>
+  <button data-act="quick" data-r="client" class="${r==='client'&&UI.screen==='app'?'on':''}">Client portal</button>
+  <button data-act="quick" data-r="admin" class="${r==='admin'&&UI.screen==='app'?'on':''}">Back office</button>
+  <button data-act="quick" data-r="agent" class="${r==='agent'&&UI.screen==='app'?'on':''}">Agent workspace</button>
+  <button data-act="skip" title="Fast-forward the automatic 30-minute status change">⏩ Skip 30 min</button>
+  <button data-act="reset">↺ Reset</button>`;}
+
+/* ================== PUBLIC SCREENS ================== */
+function gate(){const st=S.settings;return `<div class="gate">${logo()}<h1>My Tax Client Portal</h1><div class="rule"></div>
+  <p class="lead">A private, branded online portal where your clients send documents, fill in their information and follow their return, while your office manages everything from one back office.</p>
+  <div class="chips"><span>Your business name</span><span>Your logo</span><span>Your colors</span><span>Your own website address</span><span>No outside branding</span></div>
+  <div class="doors">
+    <button class="door" data-act="go" data-s="home"><h3>Client portal</h3><div class="u">${esc(st.domain)}</div><p>Your public site: easy sign-up, booking and sign-in with a one-time code by text or email.</p></button>
+    <button class="door" data-act="go" data-s="officeLogin"><h3>Back office</h3><div class="u">${esc(st.domain)}/office-login</div><p>You, the administrator. Every client, agent, report and setting.</p></button>
+    <button class="door" data-act="go" data-s="agentLogin"><h3>Agent workspace</h3><div class="u">${esc(st.domain)}/agent-login</div><p>Your agents. Each sees only their own assigned clients.</p></button>
+  </div>
+  <p class="small" style="margin-top:26px;color:#BFCBC1">For tax offices of any size, from one preparer to a team of agents · <a href="#" data-act="go" data-s="trust" style="color:var(--gold)">Trust Center</a></p></div>`;}
+
+function clientLogin(){const st=UI.authStep;
+  let body='';
+  if(st==='email')body=`<label class="f">Email address<input class="i" id="aEmail" type="email" autocomplete="email" placeholder="you@email.com" value="${esc(UI.authEmail)}"></label>
+    <button class="btn" data-act="sendCode">Email me a 6-digit code</button>
+    <div class="or">or</div>
+    <button class="btn ghost" data-act="social" data-p="Google">Continue with Google</button>
+    <button class="btn dark" data-act="social" data-p="Apple"> Continue with Apple</button>
+    <div class="demoNote">Demo: use <b>maria@example.com</b> to open an existing client, or any new email to sign up.</div>`;
+  else if(st==='code')body=`<p class="small muted" style="margin:0">We sent a code to <b>${esc(UI.authEmail)}</b>. No username or password needed.</p>
+    <input class="i code" id="aCode" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="one-time-code">
+    <div class="demoNote">Demo code (normally sent by email): <b>${UI.authCode}</b></div>
+    <button class="btn" data-act="verifyCode">Verify and sign in</button><button class="btn ghost sm" data-act="authBack">Use a different email</button>`;
+  else body=`<p class="small muted" style="margin:0">Welcome! Choose the preparer you'd like to work with.</p>
+    <label class="f">Your preparer<select class="i" id="aAgent"><option value="">No preference — assign me</option>${S.agents.filter(a=>a.active).map(a=>`<option value="${a.id}">${esc(a.name)}</option>`).join('')}</select></label>
+    <button class="btn" data-act="createClient">Create my portal</button>`;
+  return `<div class="auth"><div class="authBox"><div class="row">${logo('sm')}<div><b style="font-family:var(--serif);font-size:16px">${esc(S.settings.name)}</b><div class="small muted">Client sign-in</div></div></div>
+  <div class="stack">${body}</div><p class="small muted" style="margin:16px 0 0">🔒 <a href="#" data-act="go" data-s="trust">How we protect your data</a> · <a href="#" data-act="go" data-s="gate">All entrances</a></p></div></div>`;}
+
+function officeLogin(role){const admin=role==='admin';const locked=UI.lockUntil>now();
+  return `<div class="auth"><div class="authBox"><div class="row">${logo('sm')}<div><b style="font-family:var(--serif);font-size:16px">${esc(S.settings.name)}</b><div class="small muted">${admin?'Back office — administrator':'Agent workspace'}</div></div></div>
+  <div class="stack"><label class="f">Email<input class="i" id="oEmail" type="email" value="${admin?'admin@brightpathtax.com':'ana@brightpathtax.com'}"></label>
+  <label class="f">Password<input class="i" id="oPass" type="password" value="demo1234"></label>
+  ${locked?`<div class="hint bad">Too many attempts. Login is locked for ${Math.ceil((UI.lockUntil-now())/1000)} seconds.</div>`:UI.fails?`<div class="hint bad">Incorrect email or password (${UI.fails}/5 attempts).</div>`:''}
+  <button class="btn" data-act="officeIn" data-r="${role}" ${locked?'disabled':''}>Sign in</button>
+  <div class="demoNote">Demo: password <b>demo1234</b>. ${admin?'':'Agents: ana@, david@ or luis@brightpathtax.com.'} After 5 wrong tries, sign-in locks briefly.</div></div>
+  <p class="small muted" style="margin:16px 0 0"><a href="#" data-act="go" data-s="gate">All entrances</a></p></div></div>`;}
+
+function trust(){return `<div class="auth"><div class="authBox" style="max-width:640px"><div class="row">${logo('sm')}<div><b style="font-family:var(--serif);font-size:16px">${esc(S.settings.name)}</b><div class="small muted">Trust Center</div></div></div>
+  <h2 style="margin-top:18px">How we protect your information</h2>
+  <ul class="trust"><li><b>Encryption.</b> Social Security and bank account numbers are encrypted and shown masked (•••-••-1234).</li>
+  <li><b>Private access.</b> You see only your own records. Agents see only the clients assigned to them.</li>
+  <li><b>Safe files.</b> Uploads are checked and stored privately. Downloads use short-lived links that expire.</li>
+  <li><b>Login protection.</b> Repeated failed sign-ins are slowed down and locked to stop password guessing.</li>
+  <li><b>Separate sign-ins.</b> Clients, administrators and agents each have their own sign-in page.</li>
+  <li><b>No unsafe channels.</b> We'll never ask you to send your SSN or bank details by text or email.</li></ul>
+  <p class="small muted">Beta note: in this prototype, data stays in your browser and files are listed by name only.</p>
+  <button class="btn ghost" data-act="back">← Back</button></div></div>`;}
+
+/* ================== CLIENT PORTAL ================== */
+const CTABS=[['overview','🏠','Overview'],['info','👤','Personal information'],['forms','📄','Tax forms'],['ids','🪪','IDs & proof'],['deposit','🏦','Direct deposit'],['status','📍','Return status'],['messages','💬','Messages'],['appts','📅','Appointments'],['refer','🎁','Refer a friend'],['irs','🔗','IRS forms'],['security','🔒','Security & alerts']];
+function clientApp(){const c=me();if(!c){S.session=null;return gate();}
+  const unreadMsg=c.messages.filter(m=>m.from==='office'&&m.unread).length;
+  return `<div class="shell"><aside class="side"><div class="brand">${logo()}<div><b>${esc(S.settings.name)}</b><small>Client portal</small></div></div>
+  ${CTABS.map(([k,ic,l])=>`<button class="nav ${UI.tab===k?'on':''}" data-act="tab" data-t="${k}"><span class="ic">${ic}</span>${l}${k==='messages'&&unreadMsg?`<span class="ct">${unreadMsg}</span>`:''}${k==='overview'&&missing(c).length&&c.stage===0?`<span class="ct">${missing(c).length}</span>`:''}</button>`).join('')}
+  <div class="foot">Signed in as ${esc(c.email)}<br><a href="#" data-act="signout" style="color:var(--gold)">Sign out</a></div></aside>
+  <main class="main">${topBar(`Hi, ${esc(c.info.tp.first||'there')} 👋`,`Preparer: ${esc(agentOf(c.agentId)?.name||'Being assigned')}`)}${clientTab(c)}</main></div>`;}
+
+function topBar(title,sub){const s=S.session,n=myNotes(),u=n.filter(x=>!x.read).length;
+  return `<div class="top"><div><h1>${title}</h1><div class="muted small">${sub}</div></div><div class="who" style="position:relative">
+  <button class="bell" data-act="bell" aria-label="Notifications">🔔${u?`<i>${u}</i>`:''}</button>
+  ${UI.bell?`<div class="drop">${n.length?n.slice(0,20).map(x=>`<div class="${x.read?'':'unread'}">${esc(x.t)}<br><span class="muted small">${fmtDT(x.at)}${x.email?' · also emailed':''}</span></div>`).join(''):'<div>No notifications yet</div>'}</div>`:''}
+  <button class="btn ghost sm" data-act="signout">Sign out</button></div></div>`;}
+
+function clientTab(c){const m=missing(c);switch(UI.tab){
+case 'overview':{const ap=c.appts.filter(a=>a.status!=='cancelled'&&a.status!=='declined').slice(-1)[0];
+  return `<div class="card"><div class="sec">Your return</div>${tracker(c)}
+  ${c.stage===0&&c.submittedAt?`<p class="small muted" style="margin:10px 0 0">Thanks for submitting! Your return moves to <b>In preparation</b> automatically about 30 minutes after a complete submission.</p>`:''}</div>
+  <div class="grid2" style="margin-top:14px"><div class="card" style="margin:0"><div class="spread"><div class="sec" style="margin:0">Portal completion</div><b>${pct(c)}%</b></div><div class="meter" style="margin:8px 0 14px"><i style="width:${pct(c)}%"></i></div>
+  ${c.stage>0?'<p class="small" style="margin:0">✅ Everything is in. Your preparer is working on it.</p>':m.length?`<p class="small muted" style="margin:0 0 8px">Still needed (${m.length}):</p><div class="check">${m.slice(0,8).map(x=>`<button data-act="tab" data-t="${x.tab}"><span class="dotr"></span>${esc(x.label)}<span class="muted small" style="margin-left:auto">Fix →</span></button>`).join('')}${m.length>8?`<span class="small muted">+${m.length-8} more</span>`:''}</div>`
+    :c.submittedAt?'<p class="small" style="margin:0">✅ Submitted. Nothing else needed right now.</p>':`<p class="small" style="margin:0 0 10px">✅ All set! Send everything to your preparer.</p><button class="btn gold" data-act="submit">Submit my portal</button>`}</div>
+  <div class="card" style="margin:0"><div class="sec">Next steps</div>
+  <p class="small" style="margin:0 0 6px">📅 ${ap?`Appointment ${ap.status}: <b>${fmtD(new Date(ap.date+'T12:00'))} at ${slotLabel(ap.time)}</b>`:'No appointment yet'}</p>
+  <p class="small" style="margin:0 0 6px">💬 ${c.messages.length?`Last message: “${esc(c.messages[c.messages.length-1].text.slice(0,70))}”`:'No messages yet'}</p>
+  <div class="row" style="margin-top:10px"><button class="btn sm" data-act="tab" data-t="appts">Request appointment</button><button class="btn ghost sm" data-act="tab" data-t="messages">Message preparer</button></div></div></div>`;}
+case 'info':return infoTab(c);
+case 'forms':return `<div class="card"><h2>Tax forms</h2><p class="muted small">Upload <b>all</b> your W-2s and <b>all</b> 1099s, plus mortgage statements and any other IRS forms. Multiple files per type are fine.</p>
+  <div class="upl"><div class="grid2"><label class="f">Form type<select class="i" id="fType">${FORM_TYPES.map(t=>`<option>${t}</option>`).join('')}</select></label>
+  <label class="f">Files (photo or PDF)<input type="file" multiple accept="image/*,.pdf" data-up="docs.forms"></label></div><div class="hint">Can't find a form? See <a href="#" data-act="tab" data-t="irs">IRS form links</a>.</div></div>
+  ${fileList(c.docs.forms,'docs.forms')}</div>`;
+case 'ids':{const mfj=c.info.status==='mfj';const slot=(lbl,p,req)=>{const a=get(c,p);return `<div class="slot ${a.length?'done':''}"><div class="spread"><b>${lbl}${req?' <span style="color:var(--red)">*</span>':''}</b>${a.length?'<span class="pill ok">Uploaded</span>':'<span class="pill red">Needed</span>'}</div><input type="file" multiple accept="image/*,.pdf" data-up="${p}" style="margin-top:8px">${fileList(a,p)}</div>`;};
+  return `<div class="card"><h2>IDs and proof</h2><p class="muted small">Take a clear photo of each card. Files are checked and stored privately.</p>
+  <div class="grid2">${slot('Photo ID','docs.photo',1)}${slot('Taxpayer Social Security card','docs.ss',1)}${mfj?slot('Spouse photo ID','docs.spPhoto',1)+slot('Spouse Social Security card','docs.spSS',1):''}</div></div>
+  <div class="card"><h3>Dependent Social Security cards</h3>${c.info.deps.length?`<div class="grid2" style="margin-top:10px">${c.info.deps.map((d,k)=>slot(`${esc(d.name||'Dependent '+(k+1))}`,`docs.dep.${k}`,1)).join('')}</div>`:`<div class="empty" style="margin-top:10px">No dependents added. <a href="#" data-act="tab" data-t="info">Add dependents</a></div>`}</div>
+  <div class="card"><h3>Proof of relationship <span class="muted small">(if requested)</span></h3><div class="upl" style="margin-top:10px"><div class="grid3">
+  <label class="f">Dependent<select class="i" id="relDep">${c.info.deps.length?c.info.deps.map((d,k)=>`<option value="${k}">${esc(d.name||'Dependent '+(k+1))}</option>`).join(''):'<option value="">—</option>'}</select></label>
+  <label class="f">Document<select class="i" id="relType">${REL_DOCS.map(t=>`<option>${t}</option>`).join('')}</select></label>
+  <label class="f">File<input type="file" accept="image/*,.pdf" data-up="docs.rel"></label></div></div>${fileList(c.docs.rel,'docs.rel')}</div>`;}
+case 'deposit':{const b=c.bank,rOk=validRouting(b.routing);
+  return `<div class="card"><h2>Refund — direct deposit</h2><p class="muted small">Direct deposit is the fastest way to get your refund.</p>
+  <div class="row" style="margin:6px 0 14px"><label class="row"><input type="radio" name="rm" value="dd" data-f="bank.method" ${b.method==='dd'?'checked':''}> Direct deposit</label><label class="row"><input type="radio" name="rm" value="check" data-f="bank.method" ${b.method==='check'?'checked':''}> Paper check by mail</label></div>
+  ${b.method==='dd'?`<div class="grid2"><label class="f">Bank <span class="req">*</span><select class="i" data-f="bank.bank"><option value="">Choose your bank</option>${BANKS.map(x=>`<option ${b.bank===x?'selected':''}>${x}</option>`).join('')}</select></label>
+  <label class="f">Account type<select class="i" data-f="bank.type">${['Checking','Savings'].map(x=>`<option ${b.type===x?'selected':''}>${x}</option>`).join('')}</select></label>
+  <label class="f">Routing number <span class="req">*</span><input class="i ${b.routing?(rOk?'good':'bad'):''}" inputmode="numeric" maxlength="9" data-f="bank.routing" data-live="routing" value="${esc(b.routing)}" placeholder="9 digits"><span class="hint ${b.routing?(rOk?'good':'bad'):''}" id="rHint">${b.routing?(rOk?'✓ Valid routing number':'Not a valid routing number — check the 9 digits'):'Bottom-left of your check. Demo: 111000614'}</span></label>
+  <label class="f">Account number <span class="req">*</span><input class="i" inputmode="numeric" id="acct1" placeholder="${b.acct?maskAcct(b.acct)+' (saved, encrypted)':'Account number'}" data-acct="1"><span class="hint">${b.acct?'Saved and masked. Type a new number to replace it.':'Enter twice to confirm'}</span></label>
+  <label class="f">Confirm account number<input class="i" inputmode="numeric" id="acct2" placeholder="Re-enter account number" data-acct="2"></label>
+  <div class="slot ${b.voidCheck.length?'done':''}"><b>Voided check <span style="color:var(--red)">*</span></b><input type="file" accept="image/*,.pdf" data-up="bank.voidCheck" style="margin-top:8px">${fileList(b.voidCheck,'bank.voidCheck')}</div></div>
+  <div class="row" style="margin-top:12px"><button class="btn" data-act="saveAcct">Save bank details</button></div>`:b.method==='check'?'<p class="small">Your refund check will be mailed to the address on your personal information.</p>':''}</div>`;}
+case 'status':return `<div class="card"><h2>Return status</h2>${tracker(c)}
+  <div class="grid4" style="margin-top:16px">${['We\'re collecting your information and documents.','Your preparer is working on your return.','Your return is ready for review and signature.','Your return has been sent to the IRS.'].map((d,i)=>`<div class="slot ${c.stage>=i?'done':''}"><b class="small">${i+1}. ${STAGES[i]}</b><p class="small muted" style="margin:4px 0 0">${d}</p></div>`).join('')}</div>
+  ${c.stage===3?`<div class="card" style="margin-top:14px;background:#fff"><div class="sec">Filing result</div><p style="margin:0">${{accepted:'✅ <b>Accepted by the IRS.</b> Track your refund at <a href="https://www.irs.gov/refunds" target="_blank" rel="noopener">irs.gov/refunds</a> (Where\'s My Refund?).',rejected:'⚠️ <b>Rejected.</b> Your preparer will contact you to fix and re-file.',correction:'✏️ <b>Needs a correction.</b> Your preparer will message you with what\'s needed.'}[c.result]||'Waiting for IRS response.'}</p></div>`:''}</div>`;
+case 'messages':return msgPanel(c,'client');
+case 'appts':return apptClient(c);
+case 'refer':return `<div class="card"><h2>Refer a friend 🎁</h2><p class="muted">Happy with our service? Share your link. You get <b>${esc(S.settings.reward)}</b> for every friend who files with us.</p>
+  <div class="row"><input class="i" readonly value="https://${esc(S.settings.domain)}/r/${c.id.toUpperCase()}" style="max-width:420px"><button class="btn" data-act="copy" data-v="https://${esc(S.settings.domain)}/r/${c.id.toUpperCase()}">Copy link</button></div>
+  <div class="upl" style="margin-top:16px"><b>Or send an invite</b><div class="grid2"><label class="f">Friend's name<input class="i" id="rName"></label><label class="f">Phone or email<input class="i" id="rContact"></label></div><div><button class="btn sm" data-act="refer">Send invite</button></div></div>
+  ${c.referrals.length?`<div class="tw" style="margin-top:14px"><table><tr><th>Friend</th><th>Contact</th><th>Status</th><th>Date</th></tr>${c.referrals.map(r=>`<tr><td>${esc(r.name)}</td><td>${esc(r.contact)}</td><td><span class="pill">${esc(r.status)}</span></td><td>${fmtD(r.at)}</td></tr>`).join('')}</table></div>`:''}</div>`;
+case 'irs':return `<div class="card"><h2>IRS form links</h2><p class="muted small">Find any form quickly on the official IRS website.</p><div class="grid2">${IRS.map(([n,s])=>`<a class="slot" style="text-decoration:none;color:inherit" href="https://www.irs.gov/forms-pubs/${s}" target="_blank" rel="noopener"><b>${n}</b><div class="small muted">irs.gov ↗</div></a>`).join('')}
+  <a class="slot" style="text-decoration:none;color:inherit" href="https://www.irs.gov/ippin" target="_blank" rel="noopener"><b>Get an Identity Protection PIN</b><div class="small muted">irs.gov/ippin ↗</div></a>
+  <a class="slot" style="text-decoration:none;color:inherit" href="https://www.irs.gov/refunds" target="_blank" rel="noopener"><b>Where's My Refund?</b><div class="small muted">irs.gov/refunds ↗</div></a></div></div>`;
+case 'security':return `<div class="card"><h2>Security & alerts</h2><div class="grid2"><div><div class="sec">How I get updates</div>
+  <label class="row"><input type="radio" name="nt" value="portal" data-f="notify" ${c.notify==='portal'?'checked':''}> Portal notifications only</label><label class="row" style="margin-top:6px"><input type="radio" name="nt" value="email" data-f="notify" ${c.notify==='email'?'checked':''}> Portal + email</label>
+  <p class="small muted">We'll alert you when your return is filed. No paid text messages.</p></div>
+  <div><div class="sec">Your data</div><p class="small" style="margin:0">SSN on file: <b>${maskSSN(c.info.tp.ssn)||'—'}</b><br>Bank account: <b>${maskAcct(c.bank.acct)||'—'}</b></p><p class="small muted">Sensitive numbers are encrypted and always shown masked. <a href="#" data-act="go" data-s="trust">Trust Center</a></p>
+  <p class="small muted">📱 Tip: add this portal to your home screen. It works like an app on iPhone, Android and tablets.</p></div></div></div>`;
+}return '';}
+
+function infoTab(c){const i=c.info,t=i.tp,sp=i.sp,mar=i.status==='mfj'||i.status==='mfs';
+  const ssnField=(p,o,lbl,req=1)=>`<label class="f">${lbl} ${req?'<span class="req">*</span>':''}<input class="i" inputmode="numeric" data-ssn="${p}" placeholder="${o?maskSSN(o)+' (saved, encrypted)':'123-45-6789'}" autocomplete="off"><span class="hint">${o?'Type to replace':'SSN or ITIN, 9 digits'}</span></label>`;
+  const tx=(p,lbl,req,type='text',extra='')=>`<label class="f">${lbl} ${req?'<span class="req">*</span>':''}<input class="i" type="${type}" data-f="${p}" value="${esc(get(c,p))}" ${extra}></label>`;
+  return `<div class="card"><div class="spread"><h2>Personal information</h2><span class="hint"><span class="req" style="color:var(--red)">*</span> Required · saves automatically</span></div>
+  <div class="sec" style="margin-top:14px">Taxpayer</div><div class="grid2">${tx('info.tp.first','First name',1)}${tx('info.tp.last','Last name',1)}${ssnField('info.tp.ssn',t.ssn,'Social Security number')}
+  <label class="f">Filing status <span class="req">*</span><select class="i" data-f="info.status" data-rerender="1"><option value="">Choose…</option>${Object.entries(STATUS).map(([k,v])=>`<option value="${k}" ${i.status===k?'selected':''}>${v}</option>`).join('')}</select></label>
+  ${tx('info.tp.dob','Date of birth',1,'date')}${tx('info.tp.phone','Phone',1,'tel','placeholder="(713) 555-0100"')}${tx('info.tp.occupation','Occupation',0)}
+  <label class="f">Address (autocomplete) <span class="req">*</span><input class="i" list="addrList" data-f="info.address" value="${esc(i.address)}" placeholder="Start typing…"><datalist id="addrList">${ADDR.map(a=>`<option value="${a}">`).join('')}</datalist></label></div></div>
+  ${mar?`<div class="card"><div class="sec">Spouse — shown when married</div><div class="grid2">${tx('info.sp.first','First name',i.status==='mfj')}${tx('info.sp.last','Last name',i.status==='mfj')}${ssnField('info.sp.ssn',sp.ssn,'Spouse SSN or ITIN',i.status==='mfj')}${tx('info.sp.dob','Date of birth',0,'date')}${tx('info.sp.occupation','Occupation',0)}${tx('info.sp.ippin','Spouse IP PIN (if any)',0,'text','maxlength="6" inputmode="numeric"')}</div></div>`:''}
+  <div class="card"><div class="spread"><div class="sec" style="margin:0">Dependents — up to 5</div>${i.deps.length<5?'<button class="btn ghost sm" data-act="addDep">+ Add dependent</button>':''}</div>
+  ${i.deps.length?i.deps.map((d,k)=>`<div class="slot" style="margin-top:10px"><div class="spread"><b>Dependent ${k+1}</b><button class="btn ghost sm" data-act="rmDep" data-k="${k}">Remove</button></div><div class="grid3" style="margin-top:8px">
+  ${tx(`info.deps.${k}.name`,'Full name',1)}${ssnField(`info.deps.${k}.ssn`,d.ssn,'SSN or ITIN')}${tx(`info.deps.${k}.dob`,'Date of birth',0,'date')}
+  <label class="f">Relationship <span class="req">*</span><select class="i" data-f="info.deps.${k}.rel"><option value="">Choose…</option>${['Son','Daughter','Stepchild','Foster child','Grandchild','Niece/Nephew','Sibling','Parent','Other relative'].map(r=>`<option ${d.rel===r?'selected':''}>${r}</option>`).join('')}</select></label>
+  <label class="f">Months lived with you<select class="i" data-f="info.deps.${k}.months">${['12','11','10','9','8','7','6','Less than 6'].map(r=>`<option ${d.months===r?'selected':''}>${r}</option>`).join('')}</select></label></div></div>`).join(''):'<div class="empty" style="margin-top:10px">No dependents. Add children or relatives you support.</div>'}</div>
+  <div class="card"><div class="sec">Other</div><div class="grid2">${tx('info.tp.ippin','Your IP PIN (if the IRS sent you one)',0,'text','maxlength="6" inputmode="numeric" placeholder="6 digits"')}
+  <label class="f">Did you have Marketplace health insurance (healthcare.gov)?<select class="i" data-f="info.marketplace" data-rerender="1"><option value="no" ${i.marketplace==='no'?'selected':''}>No</option><option value="yes" ${i.marketplace==='yes'?'selected':''}>Yes — I'll upload Form 1095-A</option></select></label></div>
+  <p class="small muted" style="margin:10px 0 0">Don't have an IP PIN? <a href="https://www.irs.gov/ippin" target="_blank" rel="noopener">Learn about IP PINs at irs.gov</a></p></div>`;}
+
+function msgPanel(c,side){c.messages.forEach(m=>{if((side==='client'&&m.from==='office')||(side==='office'&&m.from==='client'))m.unread=false;});save();
+  const prep=agentOf(c.agentId)?.name||'your preparer';
+  return `<div class="card"><h2 style="margin-bottom:4px">${side==='client'?'Message '+esc(prep):'Messages with '+esc(cname(c))}</h2><p class="muted small">${side==='client'?'Your messages go straight to your preparer inside the portal.':'Client sees replies in their portal (and by email if they chose it).'}</p>
+  <div class="thread" id="thread">${c.messages.length?c.messages.map(m=>{const mine=(side==='client')===(m.from==='client');return `<div class="msg ${mine?'me':'them'}">${esc(m.text)}<small>${m.from==='office'?esc(m.who||'Office'):esc(cname(c))} · ${fmtDT(m.at)}</small></div>`;}).join(''):'<div class="empty">No messages yet. Say hello 👋</div>'}</div>
+  <div class="compose"><input class="i" id="msgIn" placeholder="Write a message…" data-enter="sendMsg"><button class="btn" data-act="sendMsg" data-side="${side}">Send</button></div></div>`;}
+
+function slotLabel(t){const [h,m]=t.split(':').map(Number);return `${((h+11)%12)+1}:${String(m).padStart(2,'0')} ${h<12?'AM':'PM'}`;}
+function apptDays(){const d=[];let t=now();while(d.length<12){t+=DAY;if(new Date(t).getDay()!==0)d.push(dayStr(t));}return d;}
+function apptClient(c){const days=apptDays();if(!UI.apptDate)UI.apptDate=days[0];const taken=takenSlots(UI.apptDate);
+  const slots=[];for(let h=9;h<18;h++)for(const m of [0,30])slots.push(`${String(h).padStart(2,'0')}:${m?'30':'00'}`);
+  return `<div class="card"><h2>Request an appointment</h2><p class="muted small">30-minute appointments · ${esc(S.settings.hours)}</p>
+  <label class="f" style="max-width:280px">Day<select class="i" id="apDate" data-act-change="apDate">${days.map(d=>`<option value="${d}" ${d===UI.apptDate?'selected':''}>${new Date(d+'T12:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</option>`).join('')}</select></label>
+  <div class="slots" style="margin-top:12px">${slots.map(s=>`<button data-act="slot" data-s="${s}" class="${UI.apptSlot===s?'on':''}" ${taken.has(s)?'disabled':''}>${slotLabel(s)}</button>`).join('')}</div>
+  <div class="row" style="margin-top:14px"><button class="btn" data-act="reqAppt" ${UI.apptSlot?'':'disabled'}>Request ${UI.apptSlot?slotLabel(UI.apptSlot):'a time'}</button></div></div>
+  <div class="card"><h3>My appointments</h3>${c.appts.length?`<div class="tw" style="margin-top:10px"><table><tr><th>Date</th><th>Time</th><th>Status</th><th></th></tr>${c.appts.map(a=>`<tr><td>${new Date(a.date+'T12:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</td><td>${slotLabel(a.time)}</td><td>${apptPill(a.status)}</td><td>${a.status==='requested'||a.status==='confirmed'?`<button class="btn ghost sm" data-act="cancelAppt" data-id="${a.id}">Cancel</button>`:''}</td></tr>`).join('')}</table></div>`:'<div class="empty" style="margin-top:10px">No appointments yet.</div>'}</div>`;}
+const apptPill=s=>`<span class="pill ${{requested:'amber',confirmed:'ok',declined:'red',cancelled:'gray'}[s]}">${s[0].toUpperCase()+s.slice(1)}</span>`;
+
+/* ================== BACK OFFICE ================== */
+function officeApp(){const s=S.session,admin=s.role==='admin',ag=admin?null:agentOf(s.id);
+  if(!admin&&(!ag||!ag.active)){S.session=null;toast('This agent account is paused.');return gate();}
+  const cl=scope(),pend=cl.reduce((n,c)=>n+c.appts.filter(a=>a.status==='requested').length,0),unread=cl.reduce((n,c)=>n+c.messages.filter(m=>m.from==='client'&&m.unread).length,0);
+  const nav=[['dash','📊','Dashboard'],['clients','👥','Clients'],['appts','📅','Appointments',pend],['inbox','💬','Messages',unread],['reports','📈','Reports']].concat(admin?[['agents','🧑‍💼','Agents'],['settings','⚙️','Branding & settings']]:[]);
+  const title=UI.cid?'':({dash:'Dashboard',clients:'Clients',appts:'Appointment requests',inbox:'Messages',reports:'Reports',agents:'Agents',settings:'Branding & settings'}[UI.tab]||'');
+  return `<div class="shell"><aside class="side"><div class="brand">${logo()}<div><b>${esc(S.settings.name)}</b><small>${admin?'Back office · Admin':'Agent workspace'}</small></div></div>
+  ${nav.map(([k,ic,l,ct])=>`<button class="nav ${UI.tab===k&&!UI.cid?'on':''}" data-act="otab" data-t="${k}"><span class="ic">${ic}</span>${l}${ct?`<span class="ct">${ct}</span>`:''}</button>`).join('')}
+  <div class="foot">${admin?'Administrator':esc(ag.name)}<br><a href="#" data-act="signout" style="color:var(--gold)">Sign out</a></div></aside>
+  <main class="main">${UI.cid?clientFile(client(UI.cid)):topBar(title,admin?'All clients and agents':'Only your assigned clients')+officeTab(cl,admin)}</main></div>`;}
+
+function officeTab(cl,admin){switch(UI.tab){
+case 'dash':{const by=[0,1,2,3].map(s=>cl.filter(c=>c.stage===s).length),miss=cl.filter(c=>c.stage===0&&missing(c).length),soon=cl.filter(c=>c.stage<3&&c.deadline&&c.deadline-now()<7*DAY);
+  return `<div class="grid4">${STAGES.map((s,i)=>`<div class="kpi"><div class="n">${by[i]}</div><div class="l">${s}</div></div>`).join('')}</div>
+  <div class="grid3" style="margin-top:14px">
+  <div class="card" style="margin:0"><div class="sec">Waiting on documents</div>${miss.length?miss.map(c=>`<div class="spread" style="padding:6px 0;border-bottom:1px solid var(--line)"><a href="#" data-act="open" data-id="${c.id}">${esc(cname(c))}</a><span class="pill red">${missing(c).length} missing</span></div>`).join(''):'<p class="small muted">None 🎉</p>'}</div>
+  <div class="card" style="margin:0"><div class="sec">Deadline alerts</div>${soon.length?soon.map(c=>`<div class="spread" style="padding:6px 0;border-bottom:1px solid var(--line)"><a href="#" data-act="open" data-id="${c.id}">${esc(cname(c))}</a><span class="pill ${c.deadline<now()?'red':'amber'}">${c.deadline<now()?'Overdue':'Due '+fmtD(c.deadline)}</span></div>`).join(''):'<p class="small muted">No deadlines this week</p>'}</div>
+  <div class="card" style="margin:0"><div class="sec">Filing results</div>${['accepted','rejected','correction'].map(r=>`<div class="spread" style="padding:6px 0;border-bottom:1px solid var(--line)"><span>${{accepted:'Accepted',rejected:'Rejected',correction:'Needs correction'}[r]}</span><b>${cl.filter(c=>c.result===r).length}</b></div>`).join('')}</div></div>
+  <div class="card"><div class="sec">Recent activity</div>${cl.flatMap(c=>c.log.slice(0,3).map(l=>({...l,c}))).sort((a,b)=>b.at-a.at).slice(0,8).map(l=>`<div class="spread small" style="padding:6px 0;border-bottom:1px solid var(--line)"><span><a href="#" data-act="open" data-id="${l.c.id}">${esc(cname(l.c))}</a> · ${esc(l.t)}</span><span class="muted">${fmtDT(l.at)}</span></div>`).join('')}</div>`;}
+case 'clients':{const q=UI.q.toLowerCase();const list=cl.filter(c=>(!q||cname(c).toLowerCase().includes(q)||c.email.includes(q)||(c.info.tp.phone||'').includes(q))&&(!UI.fAgent||c.agentId===UI.fAgent)&&(UI.fStage===''||String(c.stage)===UI.fStage));
+  return `<div class="row" style="margin-bottom:12px"><input class="i" id="q" placeholder="Search name, email or phone" value="${esc(UI.q)}" style="max-width:300px">
+  ${admin?`<select class="i" id="fAgent" style="max-width:190px"><option value="">All agents</option>${S.agents.map(a=>`<option value="${a.id}" ${UI.fAgent===a.id?'selected':''}>${esc(a.name)}</option>`).join('')}</select>`:''}
+  <select class="i" id="fStage" style="max-width:190px"><option value="">All stages</option>${STAGES.map((s,i)=>`<option value="${i}" ${UI.fStage===String(i)?'selected':''}>${s}</option>`).join('')}</select>
+  <button class="btn sm" data-act="inviteClient">+ Invite client</button></div>
+  <div class="tw"><table><tr><th>Client</th>${admin?'<th>Agent</th>':''}<th>Status</th><th>Missing</th><th>Last contact</th><th>Next follow-up</th></tr>
+  ${list.map(c=>{const m=missing(c).length;return `<tr class="click" data-act="open" data-id="${c.id}"><td><b>${esc(cname(c))}</b> ${c.ai?'<span class="ai">AI</span>':''}<div class="small muted">${esc(c.email)}</div></td>${admin?`<td>${esc(agentOf(c.agentId)?.name||'—')}</td>`:''}<td>${pillStage(c)}</td><td>${c.stage===0?(m?`<span class="pill red">${m}</span>`:'<span class="pill ok">0</span>'):'—'}</td><td>${fmtD(c.lastContact)}</td><td>${c.nextFollow?`<span class="${c.nextFollow<now()?'pill red':''}">${fmtD(c.nextFollow)}</span>`:'—'}</td></tr>`;}).join('')||`<tr><td colspan="6"><div class="empty">No clients match.</div></td></tr>`}</table></div>`;}
+case 'appts':{const rows=cl.flatMap(c=>c.appts.map(a=>({a,c}))).sort((x,y)=>(x.a.date+x.a.time).localeCompare(y.a.date+y.a.time));
+  return rows.length?`<div class="tw"><table><tr><th>Client</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr>${rows.map(({a,c})=>`<tr><td><a href="#" data-act="open" data-id="${c.id}">${esc(cname(c))}</a></td><td>${new Date(a.date+'T12:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</td><td>${slotLabel(a.time)}${a.mode?` <span class="pill gray">${a.mode==='person'?'In person':'Online'}</span>`:''}</td><td>${apptPill(a.status)}</td><td>${a.status==='requested'?`<button class="btn sm" data-act="apptSet" data-c="${c.id}" data-id="${a.id}" data-s="confirmed">Confirm</button> <button class="btn ghost sm" data-act="apptSet" data-c="${c.id}" data-id="${a.id}" data-s="declined">Decline</button>`:''}</td></tr>`).join('')}</table></div>`:'<div class="empty">No appointment requests.</div>';}
+case 'inbox':{const rows=cl.filter(c=>c.messages.length).sort((a,b)=>b.messages.at(-1).at-a.messages.at(-1).at);
+  return rows.length?`<div class="tw"><table><tr><th>Client</th><th>Last message</th><th>When</th></tr>${rows.map(c=>{const m=c.messages.at(-1),u=c.messages.some(x=>x.from==='client'&&x.unread);return `<tr class="click" data-act="open" data-id="${c.id}" data-ct="messages"><td><b>${esc(cname(c))}</b> ${u?'<span class="pill red">New</span>':''}</td><td class="small">${m.from==='office'?'You: ':''}${esc(m.text.slice(0,80))}</td><td class="small muted">${fmtDT(m.at)}</td></tr>`;}).join('')}</table></div>`:'<div class="empty">No messages yet.</div>';}
+case 'reports':return reports(cl,admin);
+case 'agents':return agentsTab();
+case 'settings':return settingsTab();
+}return '';}
+
+function clientFile(c){if(!c){UI.cid=null;return '';}const s=S.session,admin=s.role==='admin',m=missing(c),i=c.info;
+  const cool=c.lastReminder&&now()-c.lastReminder<REMIND_MS;const tabs=[['overview','Overview'],['docs','Documents'],['messages','Messages'],['appts','Appointments'],['follow','Follow-up & notes'],['log','Activity']];
+  let body='';
+  if(UI.ctab==='overview')body=`<div class="grid2"><div class="card" style="margin:0"><div class="sec">Taxpayer</div>
+    <table><tr><td class="muted">Name</td><td>${esc(cname(c))}</td></tr><tr><td class="muted">SSN</td><td>${maskSSN(i.tp.ssn)||'<span class="pill red">Missing</span>'} ${admin&&i.tp.ssn?`<button class="btn ghost sm" data-act="reveal" data-p="info.tp.ssn">Reveal</button>`:''}</td></tr>
+    <tr><td class="muted">Filing status</td><td>${STATUS[i.status]||'—'}</td></tr><tr><td class="muted">DOB</td><td>${esc(i.tp.dob||'—')}</td></tr><tr><td class="muted">Phone</td><td>${esc(i.tp.phone||'—')}</td></tr><tr><td class="muted">Email</td><td>${esc(c.email)}</td></tr><tr><td class="muted">Address</td><td>${esc(i.address||'—')}</td></tr><tr><td class="muted">IP PIN</td><td>${i.tp.ippin?'On file':'—'}</td></tr><tr><td class="muted">Marketplace</td><td>${i.marketplace==='yes'?'Yes (1095-A)':'No'}</td></tr></table>
+    ${i.status==='mfj'||i.status==='mfs'?`<div class="sec" style="margin-top:12px">Spouse</div><p class="small" style="margin:0">${esc((i.sp.first+' '+i.sp.last).trim()||'—')} · SSN ${maskSSN(i.sp.ssn)||'missing'}</p>`:''}
+    <div class="sec" style="margin-top:12px">Dependents (${i.deps.length})</div>${i.deps.map(d=>`<p class="small" style="margin:2px 0">${esc(d.name)} · ${esc(d.rel)} · SSN ${maskSSN(d.ssn)||'missing'}</p>`).join('')||'<p class="small muted" style="margin:0">None</p>'}
+    <div class="sec" style="margin-top:12px">Refund</div><p class="small" style="margin:0">${c.bank.method==='dd'?`Direct deposit · ${esc(c.bank.bank)} · ${c.bank.type} · routing ${esc(c.bank.routing)} ${validRouting(c.bank.routing)?'✓':'✗'} · acct ${maskAcct(c.bank.acct)||'—'}`:c.bank.method==='check'?'Paper check':'Not chosen'}</p></div>
+    <div><div class="card" style="margin:0"><div class="spread"><div class="sec" style="margin:0">Portal completion</div><b>${pct(c)}%</b></div><div class="meter" style="margin:8px 0 12px"><i style="width:${pct(c)}%"></i></div>
+    ${m.length?`<div class="check">${m.map(x=>`<button style="cursor:default"><span class="dotr"></span>${esc(x.label)}</button>`).join('')}</div>`:'<p class="small" style="margin:0">✅ Complete'+(c.submittedAt?` · submitted ${fmtDT(c.submittedAt)}`:' · not yet submitted by client')+'</p>'}
+    <div class="row" style="margin-top:12px"><button class="btn ghost sm" data-act="remind" ${cool||!m.length?'disabled':''}>✉️ Send completion reminder</button>${cool?`<span class="hint">Next reminder available ${fmtD(c.lastReminder+REMIND_MS)} (3-day cooldown)</span>`:''}</div></div>
+    ${c.intake?`<div class="card"><div class="sec">From the website sign-up</div><p class="small" style="margin:0"><b>Needs help with:</b> ${esc(c.intake.help.join(', '))}<br><b>Income:</b> ${esc(c.intake.income.join(', ')||'—')}<br><b>ZIP:</b> ${esc(c.intake.zip)} · <b>Meeting:</b> ${{online:'Online',person:'In person',upload:'Upload only'}[c.intake.mode]} · <b>Language:</b> ${esc(c.intake.lang)}${c.intake.sms?' · <b>Texts:</b> opted in':''}</p></div>`:''}<div class="card"><div class="spread"><div><div class="sec" style="margin:0">Starling AI texting <span class="ai">AI</span></div><p class="small muted" style="margin:4px 0 0">Auto-text this client missing-document reminders, status updates and appointment confirmations.</p></div>
+    <button class="btn ${c.ai?'':'ghost'} sm" data-act="aiToggle">${c.ai?'On':'Off'}</button></div></div></div></div>`;
+  else if(UI.ctab==='docs'){const d=c.docs;const g=(l,a)=>`<div class="slot"><b>${l}</b>${fileList(a,'',false,true)}</div>`;
+    body=`<p class="small muted">Open files with short-lived links (expire after 5 minutes).</p><div class="grid2">${g('Tax forms',d.forms)}${g('Photo ID',d.photo)}${g('Taxpayer SS card',d.ss)}${i.status==='mfj'?g('Spouse photo ID',d.spPhoto)+g('Spouse SS card',d.spSS):''}${i.deps.map((x,k)=>g('SS card — '+esc(x.name),d.dep[k]||[])).join('')}${g('Proof of relationship',d.rel)}${g('Voided check',c.bank.voidCheck)}</div>`;}
+  else if(UI.ctab==='messages')body=msgPanel(c,'office');
+  else if(UI.ctab==='appts')body=c.appts.length?`<div class="tw"><table><tr><th>Date</th><th>Time</th><th>Status</th><th></th></tr>${c.appts.map(a=>`<tr><td>${new Date(a.date+'T12:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</td><td>${slotLabel(a.time)}</td><td>${apptPill(a.status)}</td><td>${a.status==='requested'?`<button class="btn sm" data-act="apptSet" data-c="${c.id}" data-id="${a.id}" data-s="confirmed">Confirm</button> <button class="btn ghost sm" data-act="apptSet" data-c="${c.id}" data-id="${a.id}" data-s="declined">Decline</button>`:''}</td></tr>`).join('')}</table></div>`:'<div class="empty">No appointments.</div>';
+  else if(UI.ctab==='follow')body=`<div class="card"><div class="grid3"><label class="f">Last contact<input class="i" type="date" data-cf="lastContact" value="${c.lastContact?dayStr(c.lastContact):''}"></label><label class="f">Next follow-up<input class="i" type="date" data-cf="nextFollow" value="${c.nextFollow?dayStr(c.nextFollow):''}"></label><label class="f">Preparation deadline<input class="i" type="date" data-cf="deadline" value="${c.deadline?dayStr(c.deadline):''}"></label></div>
+    <label class="f" style="margin-top:12px">Internal notes (never shown to client)<textarea class="i" rows="4" data-cn="1">${esc(c.notes)}</textarea></label><div class="row" style="margin-top:10px"><button class="btn sm" data-act="logContact">Log contact today</button></div></div>`;
+  else body=`<div class="card">${c.log.map(l=>`<div class="spread small" style="padding:7px 0;border-bottom:1px solid var(--line)"><span>${esc(l.t)}</span><span class="muted">${fmtDT(l.at)}</span></div>`).join('')}</div>`;
+  return `<button class="btn ghost sm" data-act="closeFile">← All clients</button>
+  <div class="spread" style="margin-top:12px"><div><h1>${esc(cname(c))} ${c.ai?'<span class="ai">AI</span>':''}</h1><div class="row small muted" style="margin-top:4px">${pillStage(c)} · Agent: ${admin?`<select class="i" id="reassign" style="width:auto;min-height:32px;padding:3px 8px">${S.agents.map(a=>`<option value="${a.id}" ${a.id===c.agentId?'selected':''}>${esc(a.name)}${a.active?'':' (paused)'}</option>`).join('')}</select>`:esc(agentOf(c.agentId)?.name)}</div></div>
+  <div class="row">${c.stage<3?`<button class="btn" data-act="advance">Move to ${STAGES[c.stage+1]} →</button>`:''}${c.stage>0?`<button class="btn ghost sm" data-act="back1">↩ Back a stage</button>`:''}</div></div>
+  <div class="card" style="margin-top:14px">${tracker(c)}${c.stage===3?`<div class="row" style="margin-top:12px"><span class="small muted">Record filing result:</span>${[['accepted','Accepted'],['rejected','Rejected'],['correction','Needs correction']].map(([k,l])=>`<button class="btn ${c.result===k?'':'ghost'} sm" data-act="result" data-r="${k}">${l}</button>`).join('')}</div>`:''}</div>
+  <div class="tabs">${tabs.map(([k,l])=>`<button class="tab ${UI.ctab===k?'on':''}" data-act="ctab" data-t="${k}">${l}</button>`).join('')}</div>${body}`;}
+
+/* ================== REPORTS ================== */
+function reportData(cl,k){
+  if(k==='missing')return {cols:['Client','Agent','Missing items'],rows:cl.filter(c=>c.stage===0&&missing(c).length).map(c=>[cname(c),agentOf(c.agentId)?.name,missing(c).map(x=>x.label).join('; ')])};
+  if(k==='follow')return {cols:['Client','Agent','Last contact','Next follow-up','Overdue'],rows:cl.filter(c=>c.stage<3||c.result!=='accepted').map(c=>[cname(c),agentOf(c.agentId)?.name,fmtD(c.lastContact),fmtD(c.nextFollow),c.nextFollow&&c.nextFollow<now()?'Yes':'No'])};
+  if(k==='deadline')return {cols:['Client','Agent','Status','Deadline','Alert'],rows:cl.filter(c=>c.stage<3&&c.deadline).sort((a,b)=>a.deadline-b.deadline).map(c=>[cname(c),agentOf(c.agentId)?.name,STAGES[c.stage],fmtD(c.deadline),c.deadline<now()?'Overdue':c.deadline-now()<3*DAY?'Due in 3 days':c.deadline-now()<7*DAY?'Due this week':'On track'])};
+  if(k==='results')return {cols:['Client','Agent','Filed','Result'],rows:cl.filter(c=>c.stage===3).map(c=>[cname(c),agentOf(c.agentId)?.name,fmtD(c.stageAt[3]),{accepted:'Accepted',rejected:'Rejected',correction:'Needs correction'}[c.result]||'Pending'])};
+  return {cols:['Agent','Status','Assigned clients','Completed returns','Waiting on documents'],rows:S.agents.filter(a=>S.session.role==='admin'||a.id===S.session.id).map(a=>{const mine=S.clients.filter(c=>c.agentId===a.id);return [a.name,a.active?'Active':'Paused',mine.length,mine.filter(c=>c.stage===3).length,mine.filter(c=>c.stage===0&&missing(c).length).length];})};
+}
+function reports(cl){const R=[['missing','Missing documents','Exactly what each client still needs'],['follow','Follow-up tracker','Last contact and next follow-up date'],['deadline','Deadline alerts','Per-client preparation deadlines'],['results','Filing results','Accepted, rejected and needing correction'],['workload','Agent workload','Assigned, completed, waiting on documents']];
+  const d=reportData(cl,UI.report);
+  return `<div class="grid3" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">${R.map(([k,t,s])=>`<button class="slot" style="text-align:left;cursor:pointer;${UI.report===k?'border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,162,39,.25)':''}" data-act="report" data-k="${k}"><b>${t}</b><div class="small muted">${s}</div></button>`).join('')}</div>
+  <div class="spread" style="margin:16px 0 8px"><h2>${R.find(r=>r[0]===UI.report)[1]}</h2><div class="row"><button class="btn ghost sm" data-act="csv">Export CSV</button><button class="btn ghost sm" data-act="pdf">Export PDF</button></div></div>
+  ${UI.report==='results'?`<div class="grid3" style="margin-bottom:12px">${['accepted','rejected','correction'].map(r=>`<div class="kpi"><div class="n">${cl.filter(c=>c.result===r).length}</div><div class="l">${{accepted:'Accepted',rejected:'Rejected',correction:'Needs correction'}[r]}</div></div>`).join('')}</div>`:''}
+  <div class="tw"><table><tr>${d.cols.map(c=>`<th>${c}</th>`).join('')}</tr>${d.rows.length?d.rows.map(r=>`<tr>${r.map(v=>`<td class="${typeof v==='number'?'num':''}">${esc(v)}</td>`).join('')}</tr>`).join(''):`<tr><td colspan="${d.cols.length}"><div class="empty">Nothing to report.</div></td></tr>`}</table></div>
+  <p class="small muted">Exports never include SSNs, bank data, documents or messages.</p>`;}
+
+/* ================== AGENTS & SETTINGS ================== */
+function agentsTab(){return `<div class="tw"><table><tr><th>Agent</th><th>Email</th><th>Status</th><th class="num">Clients</th><th>Actions</th></tr>${S.agents.map(a=>`<tr><td><b>${esc(a.name)}</b></td><td>${esc(a.email)}</td><td>${a.active?'<span class="pill ok">Active</span>':'<span class="pill gray">Paused</span>'}</td><td class="num">${S.clients.filter(c=>c.agentId===a.id).length}</td>
+  <td><div class="row"><button class="btn ghost sm" data-act="agPause" data-id="${a.id}">${a.active?'Pause access':'Restore access'}</button><button class="btn ghost sm" data-act="agPass" data-id="${a.id}">Reset password</button><button class="btn ghost sm" data-act="agMove" data-id="${a.id}">Reassign clients</button></div></td></tr>`).join('')}</table></div>
+  <div class="card"><h3>Create agent account</h3><p class="small muted">Only the administrator can create agents. Each agent sees only their own clients.</p><div class="grid3"><label class="f">Full name<input class="i" id="agName"></label><label class="f">Email<input class="i" id="agEmail" type="email"></label><div style="display:flex;align-items:flex-end"><button class="btn" data-act="agAdd">Create agent</button></div></div></div>`;}
+function settingsTab(){const st=S.settings;const sw=['#1F4A35','#1D3A5F','#5B2A4E','#7A3B1D','#2B2B2B','#0F5E63'];
+  return `<div class="card"><h2>Your brand</h2><p class="muted small">Your business name, logo, colors and website address. No outside branding.</p><div class="grid2">
+  <label class="f">Business name<input class="i" data-s="name" value="${esc(st.name)}"></label><label class="f">Logo initials (upload a logo file in production)<input class="i" data-s="initials" maxlength="3" value="${esc(st.initials)}"></label>
+  <label class="f">Your website address<input class="i" data-s="domain" value="${esc(st.domain)}"></label><label class="f">Office hours shown to clients<input class="i" data-s="hours" value="${esc(st.hours)}"></label>
+  <label class="f">Referral reward<input class="i" data-s="reward" value="${esc(st.reward)}"></label>
+  <label class="f">Office phone (shown on the website)<input class="i" data-s="phone" value="${esc(st.phone||'')}"></label>
+  <div class="grid3">${['Upload & we file','Meet with a preparer','Full service'].map((n,i)=>`<label class="f">${n} price<input class="i" data-s="price${i}" value="${esc(st['price'+i]||'')}"></label>`).join('')}</div>
+  <div class="f"><span style="font-size:13px;font-weight:600">Brand color</span><div class="row">${sw.map(c=>`<button data-act="color" data-c="${c}" title="${c}" style="width:36px;height:36px;border-radius:50%;border:3px solid ${st.color===c?'var(--gold)':'#fff'};background:${c};cursor:pointer;box-shadow:0 0 0 1px var(--line)"></button>`).join('')}<input type="color" value="${st.color}" data-act-change="colorPick" style="width:44px;height:36px;border:0;background:none"></div></div></div></div>
+  <div class="card"><h3>Notifications</h3><ul class="small" style="margin:6px 0 0;padding-left:18px"><li><b>New submission</b> — alert to your office email when a client submits.</li><li><b>Return filed</b> — client gets an email and an in-portal notice.</li><li><b>Appointment request</b> — alert when a client requests an appointment.</li><li><b>Completion reminders</b> — manual reminder emails with a 3-day cooldown.</li></ul><p class="small muted">Email and portal alerts only. No paid SMS, no extra cost. Add <span class="ai">AI</span> Starling texting per client if you want it.</p></div>`;}
+
+/* ================== RENDER ================== */
+function applyBrand(){const c=S.settings.color;const r=document.documentElement.style;r.setProperty('--green',c);r.setProperty('--green-d',shade(c,-.28));r.setProperty('--green-l',shade(c,.18));}
+function shade(hex,p){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;const f=x=>Math.round(p<0?x*(1+p):x+(255-x)*p);return '#'+[f(r),f(g),f(b)].map(x=>Math.max(0,Math.min(255,x)).toString(16).padStart(2,'0')).join('');}
+function render(){applyBrand();betaBar();const s=S.session;let h;
+  if(UI.screen==='trust')h=trust();
+  else if(UI.screen==='home')h=home();
+  else if(UI.screen==='start')h=wizard();
+  else if(UI.screen==='signin')h=signinPage();
+  else if(!s)h=UI.screen==='clientLogin'?clientLogin():UI.screen==='officeLogin'?officeLogin('admin'):UI.screen==='agentLogin'?officeLogin('agent'):gate();
+  else h=s.role==='client'?clientApp():officeApp();
+  document.getElementById('app').innerHTML=h;document.title=`${S.settings.name} — Client Portal (Beta)`;
+  const th=document.getElementById('thread');if(th)th.scrollTop=th.scrollHeight;}
+
+/* ================== ACTIONS ================== */
+const A={
+  go:(el)=>{UI.prev=UI.screen;UI.screen=el.dataset.s;UI.authStep='email';UI.fails=0;render();scrollTo(0,0);},
+  back:()=>{UI.screen=S.session&&UI.prev==='app'?'app':(UI.prev&&UI.prev!=='trust'?UI.prev:'home');render();},
+  quick:(el)=>{const r=el.dataset.r;UI.cid=null;UI.bell=false;
+    if(r==='gate'||r==='home'){S.session=null;UI.screen=r;UI.si={step:'id',id:''};}
+    else if(r==='client'){S.session={role:'client',id:S.clients.find(c=>c.email==='maria@example.com')?.id||S.clients[0].id};UI.tab='overview';UI.screen='app';}
+    else if(r==='admin'){S.session={role:'admin',id:'admin'};UI.tab='dash';UI.screen='app';}
+    else {const a=S.agents.find(x=>x.active)||S.agents[0];a.active=true;S.session={role:'agent',id:a.id};UI.tab='dash';UI.screen='app';}
+    save();render();scrollTo(0,0);},
+  skip:()=>{let n=0;S.clients.forEach(c=>{if(c.submittedAt&&c.stage===0){c.submittedAt-=AUTO_MS;n++;}});tick();save();render();toast(n?`Fast-forwarded 30 minutes: ${n} submitted portal(s) checked for "In preparation".`:'No submitted portals are waiting.');},
+  reset:()=>modal(`<h2>Reset demo data?</h2><p class="muted">This restores the sample clients, agents and settings.</p><div class="row"><button class="btn danger" data-act="doReset">Reset</button><button class="btn ghost" data-act="closeModal">Cancel</button></div>`),
+  doReset:()=>{S=seed();save();Object.assign(UI,{screen:'gate',tab:'overview',cid:null,q:'',fAgent:'',fStage:'',bell:false});modal('');render();toast('Demo data reset');},
+  closeModal:()=>modal(''),
+  closeModalBg:(el,e)=>{if(e.target===el)modal('');},
+  signout:()=>{S.session=null;UI.screen='home';UI.si={step:'id',id:''};UI.cid=null;UI.bell=false;save();render();},
+  bell:()=>{UI.bell=!UI.bell;if(!UI.bell)myNotes().forEach(n=>n.read=true);save();render();},
+  sendCode:()=>{const e=document.getElementById('aEmail').value.trim().toLowerCase();if(!/^\S+@\S+\.\S+$/.test(e))return toast('Enter a valid email address');UI.authEmail=e;UI.authCode=String(Math.floor(100000+Math.random()*900000));UI.authStep='code';render();setTimeout(()=>document.getElementById('aCode')?.focus(),50);},
+  authBack:()=>{UI.authStep='email';render();},
+  verifyCode:()=>{const v=document.getElementById('aCode').value.trim();if(v!==UI.authCode)return toast('That code doesn\'t match. Check the demo code above.');signInClient(UI.authEmail);},
+  social:(el)=>{const e=(document.getElementById('aEmail')?.value.trim().toLowerCase())||'alex.rivera@gmail.com';UI.authEmail=e;toast(`${el.dataset.p} sign-in simulated in the beta`);signInClient(e);},
+  createClient:()=>{let a=document.getElementById('aAgent').value;if(!a){const act=S.agents.filter(x=>x.active);a=act.sort((x,y)=>S.clients.filter(c=>c.agentId===x.id).length-S.clients.filter(c=>c.agentId===y.id).length)[0].id;}
+    const c=blankClient(UI.authEmail,a);S.clients.push(c);notify('office',`New client signed up: ${c.email}`,true);S.session={role:'client',id:c.id};UI.tab='info';UI.screen='app';save();render();toast('Welcome! Start with your personal information.');},
+  officeIn:(el)=>{const role=el.dataset.r,e=document.getElementById('oEmail').value.trim().toLowerCase(),p=document.getElementById('oPass').value;
+    if(UI.lockUntil>now())return;let ok=null;
+    if(role==='admin'&&e==='admin@brightpathtax.com'&&p==='demo1234')ok={role:'admin',id:'admin'};
+    if(role==='agent'){const a=S.agents.find(x=>x.email===e&&x.pass===p);if(a&&!a.active){toast('This account is paused. Contact your administrator.');return;}if(a)ok={role:'agent',id:a.id};}
+    if(!ok){UI.fails++;if(UI.fails>=5){UI.lockUntil=now()+60000;UI.fails=0;setTimeout(render,60500);}render();return;}
+    UI.fails=0;S.session=ok;UI.tab='dash';UI.screen='app';save();render();},
+  tab:(el)=>{UI.tab=el.dataset.t;UI.bell=false;render();scrollTo(0,0);},
+  otab:(el)=>{UI.tab=el.dataset.t;UI.cid=null;UI.bell=false;render();scrollTo(0,0);},
+  addDep:()=>{const c=me();if(c.info.deps.length<5){c.info.deps.push({name:'',ssn:null,dob:'',rel:'',months:'12'});save();render();}},
+  rmDep:(el)=>{const c=me(),k=+el.dataset.k;c.info.deps.splice(k,1);c.docs.dep.splice(k,1);c.docs.dep.push([]);save();render();},
+  rmFile:(el)=>{const c=me();const arr=get(c,el.dataset.p);const i=arr.findIndex(f=>f.id===el.dataset.id);if(i>-1)arr.splice(i,1);save();render();},
+  saveAcct:()=>{const c=me(),a1=document.getElementById('acct1').value.replace(/\D/g,''),a2=document.getElementById('acct2').value.replace(/\D/g,'');
+    if(a1){if(a1.length<4||a1.length>17)return toast('Account numbers are 4–17 digits');if(a1!==a2)return toast('Account numbers don\'t match');c.bank.acct=enc(a1);log(c,'Bank account updated by client');}
+    save();render();toast(validRouting(c.bank.routing)?'Bank details saved (account number encrypted and masked)':'Saved — but the routing number isn\'t valid yet');},
+  submit:()=>{const c=me();if(missing(c).length)return toast('A few items are still missing');c.submittedAt=now();log(c,'Client submitted a complete portal');notify('office',`${cname(c)} submitted a complete portal`,true);save();render();toast('Submitted! Status moves to "In preparation" in about 30 minutes. (Use ⏩ Skip 30 min to see it.)');},
+  sendMsg:(el)=>{const inp=document.getElementById('msgIn'),t=inp.value.trim();if(!t)return;const s=S.session;
+    if(s.role==='client'){const c=me();c.messages.push({from:'client',text:t,at:now(),unread:true});notify('office',`New message from ${cname(c)}`);c.lastContact=now();}
+    else{const c=client(UI.cid);c.messages.push({from:'office',who:s.role==='admin'?'Office':agentOf(s.id).name,text:t,at:now(),unread:true});notify('client:'+c.id,'New message from your preparer',c.notify==='email');c.lastContact=now();log(c,'Message sent to client');}
+    save();render();document.getElementById('msgIn')?.focus();},
+  slot:(el)=>{UI.apptSlot=el.dataset.s;render();},
+  reqAppt:()=>{const c=me();if(takenSlots(UI.apptDate).has(UI.apptSlot))return toast('That time was just taken');c.appts.push({id:uid(),date:UI.apptDate,time:UI.apptSlot,status:'requested',at:now()});log(c,`Requested appointment ${UI.apptDate} ${slotLabel(UI.apptSlot)}`);notify('office',`${cname(c)} requested an appointment`,true);UI.apptSlot='';save();render();toast('Appointment requested. We\'ll confirm shortly.');},
+  cancelAppt:(el)=>{const c=me(),a=c.appts.find(x=>x.id===el.dataset.id);a.status='cancelled';log(c,'Client cancelled an appointment');save();render();},
+  apptSet:(el)=>{const c=client(el.dataset.c),a=c.appts.find(x=>x.id===el.dataset.id);a.status=el.dataset.s;log(c,`Appointment ${a.status}: ${a.date} ${slotLabel(a.time)}`);notify('client:'+c.id,`Your appointment on ${fmtD(new Date(a.date+'T12:00'))} at ${slotLabel(a.time)} was ${a.status}`,c.notify==='email');save();render();},
+  refer:()=>{const c=me(),n=document.getElementById('rName').value.trim(),ct=document.getElementById('rContact').value.trim();if(!n||!ct)return toast('Add your friend\'s name and contact');c.referrals.push({name:n,contact:ct,at:now(),status:'Invited'});log(c,`Referred ${n}`);notify('office',`${cname(c)} referred ${n}`);save();render();toast('Invite sent! Thank you 🎁');},
+  copy:(el)=>{try{navigator.clipboard.writeText(el.dataset.v).then(()=>toast('Copied'),()=>toast('Copy blocked — select the text instead'));}catch(e){toast('Copy blocked — select the text instead');}},
+  open:(el)=>{UI.cid=el.dataset.id;UI.ctab=el.dataset.ct||'overview';UI.bell=false;render();scrollTo(0,0);},
+  closeFile:()=>{UI.cid=null;render();},
+  ctab:(el)=>{UI.ctab=el.dataset.t;render();},
+  advance:()=>{const c=client(UI.cid);if(c.stage===0&&missing(c).length){modal(`<h2>Documents still missing</h2><p class="muted">${esc(cname(c))} is missing ${missing(c).length} item(s). Move to In preparation anyway?</p><div class="row"><button class="btn" data-act="forceAdv">Move anyway</button><button class="btn ghost" data-act="closeModal">Cancel</button></div>`);return;}doAdvance(c);},
+  forceAdv:()=>{modal('');doAdvance(client(UI.cid));},
+  back1:()=>{const c=client(UI.cid);c.stageAt[c.stage]=null;c.stage--;if(c.stage<3)c.result=null;log(c,`Status moved back to ${STAGES[c.stage]}`);save();render();},
+  result:(el)=>{const c=client(UI.cid);c.result=el.dataset.r;const l={accepted:'Accepted',rejected:'Rejected',correction:'Needs correction'}[c.result];log(c,`Filing result recorded: ${l}`);notify('client:'+c.id,`Filing update: ${l}`,c.notify==='email');save();render();toast(`Recorded: ${l}. Client notified.`);},
+  remind:()=>{const c=client(UI.cid);c.lastReminder=now();c.lastContact=now();log(c,`Completion reminder emailed (${missing(c).length} items)`);notify('client:'+c.id,`Reminder: ${missing(c).length} item(s) still needed in your portal`,true);save();render();toast('Reminder email sent (simulated). Next one available in 3 days.');},
+  aiToggle:()=>{const c=client(UI.cid);c.ai=!c.ai;log(c,c.ai?'Starling AI texting turned ON':'Starling AI texting turned OFF');save();render();toast(c.ai?'Starling AI will text this client reminders and updates':'Starling AI texting off');},
+  reveal:(el)=>{const c=client(UI.cid);log(c,'Admin revealed SSN (access logged)');save();modal(`<h2>Sensitive data</h2><p>SSN: <b style="font-family:ui-monospace,monospace">${dec(get(c,el.dataset.p)).replace(/(\d{3})(\d{2})(\d{4})/,'$1-$2-$3')}</b></p><p class="small muted">This view was logged in the client's activity.</p><button class="btn" data-act="closeModal">Hide</button>`);},
+  logContact:()=>{const c=client(UI.cid);c.lastContact=now();log(c,'Contact logged');save();render();toast('Contact logged');},
+  dl:(el)=>toast(`Secure link for ${el.dataset.n} created — expires in 5 minutes (simulated)`),
+  inviteClient:()=>modal(`<h2>Invite a client</h2><label class="f">Client email<input class="i" id="invEmail" type="email"></label><div class="row" style="margin-top:12px"><button class="btn" data-act="doInvite">Send invite</button><button class="btn ghost" data-act="closeModal">Cancel</button></div>`),
+  doInvite:()=>{const e=document.getElementById('invEmail').value.trim().toLowerCase();if(!/^\S+@\S+\.\S+$/.test(e))return toast('Enter a valid email');if(S.clients.some(c=>c.email===e))return toast('That client already exists');const s=S.session;const c=blankClient(e,s.role==='agent'?s.id:S.agents[0].id);log(c,'Invited by office');S.clients.push(c);save();modal('');render();toast(`Invite emailed to ${e} (simulated)`);},
+  report:(el)=>{UI.report=el.dataset.k;render();},
+  csv:()=>{const d=reportData(scope(),UI.report);const q=v=>`"${String(v??'').replace(/"/g,'""')}"`;const t=[d.cols.map(q).join(','),...d.rows.map(r=>r.map(q).join(','))].join('\n');
+    modal(`<h2>CSV export</h2><p class="small muted">No SSNs, bank data, documents or messages are included.</p><pre class="csv" id="csvT">${esc(t)}</pre><div class="row"><button class="btn" data-act="copy" data-v="${esc(t)}">Copy CSV</button><button class="btn ghost" data-act="closeModal">Close</button></div>`);},
+  pdf:()=>toast('PDF export is turned on in the production build'),
+  agPause:(el)=>{const a=agentOf(el.dataset.id);a.active=!a.active;save();render();toast(a.active?`${a.name} can sign in again`:`${a.name}'s access is paused`);},
+  agPass:(el)=>{const a=agentOf(el.dataset.id);a.pass='Tmp-'+Math.random().toString(36).slice(2,8);save();modal(`<h2>Password reset</h2><p>Temporary password for <b>${esc(a.name)}</b>:</p><p style="font-family:ui-monospace,monospace;font-size:20px">${a.pass}</p><p class="small muted">Share it securely. They'll be asked to change it at next sign-in.</p><button class="btn" data-act="closeModal">Done</button>`);},
+  agMove:(el)=>{const a=agentOf(el.dataset.id);const n=S.clients.filter(c=>c.agentId===a.id).length;modal(`<h2>Reassign ${n} client(s)</h2><p class="muted">Move all of ${esc(a.name)}'s clients to:</p><select class="i" id="moveTo">${S.agents.filter(x=>x.id!==a.id).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select><div class="row" style="margin-top:12px"><button class="btn" data-act="doMove" data-from="${a.id}">Reassign</button><button class="btn ghost" data-act="closeModal">Cancel</button></div>`);},
+  doMove:(el)=>{const to=document.getElementById('moveTo').value;let n=0;S.clients.forEach(c=>{if(c.agentId===el.dataset.from){c.agentId=to;log(c,`Reassigned to ${agentOf(to).name}`);n++;}});save();modal('');render();toast(`${n} client(s) reassigned`);},
+  agAdd:()=>{const n=document.getElementById('agName').value.trim(),e=document.getElementById('agEmail').value.trim().toLowerCase();if(!n||!/^\S+@\S+\.\S+$/.test(e))return toast('Add a name and valid email');if(S.agents.some(a=>a.email===e))return toast('That email is already an agent');const p='Tmp-'+Math.random().toString(36).slice(2,8);S.agents.push({id:uid(),name:n,email:e,pass:p,active:true});save();render();modal(`<h2>Agent created</h2><p><b>${esc(n)}</b> can sign in at <b>${esc(S.settings.domain)}/agent-login</b></p><p>Temporary password: <b style="font-family:ui-monospace,monospace">${p}</b></p><button class="btn" data-act="closeModal">Done</button>`);},
+  color:(el)=>{S.settings.color=el.dataset.c;save();render();},
+};
+function doAdvance(c){setStage(c,c.stage+1,S.session.role==='admin'?'admin':agentOf(S.session.id).name);if(c.stage===3){notify('client:'+c.id,'Your return has been filed!',true);toast('Marked as filed. Client gets an email + portal notice.');}save();render();}
+function signInClient(e){const c=S.clients.find(x=>x.email===e);if(c){S.session={role:'client',id:c.id};UI.tab='overview';UI.screen='app';save();render();}else{UI.authStep='agent';render();}}
+
+/* ================== PUBLIC CLIENT SITE (EN / ES) ================== */
+const TY=(()=>{const d=new Date();return d.getMonth()>=9?d.getFullYear():d.getFullYear()-1;})(); // tax year being filed this season
+const L={
+en:{services:'Services',pricing:'Pricing',hownav:'How it works',signup:'Sign up',signin:'Sign in',other:'Español',
+ hero_t:'Let’s take taxes off your mind',hero_s:'A local preparer files your return for you, from your phone or in our office.',get_started:'Get started',
+ refund:'Return filed',yr:'Your return',accepted:'Accepted by the IRS',docs_in:'Documents received',
+ si_t:'Let’s get you in to {n}',si_l:'Phone number or email',remember:'Remember me',si_terms:'By signing in, you agree to our Terms and acknowledge our Privacy Policy.',si_new:'New here?',create:'Create an account',
+ talk_t:'Talk to a preparer',talk_s:'Book a 30-minute appointment, online or in person.',schedule:'Schedule appointment',call:'Call us',
+ opts_t:'Tax help that fits you',rec:'WE RECOMMEND',starting:'Starting at',pay_when:'Pay only when we file',sample:'Sample prices. Your office sets its own.',
+ o:[['Upload & we file','Send your documents from your phone. We prepare and file.',['Snap a photo of your W-2 or 1099','A preparer reviews everything','Track your return in your portal']],
+    ['Meet with a preparer','Go over your return with a preparer, online or in person.',['Everything in Upload & we file','30-minute meeting by phone, video or at our office','Ask questions as you go']],
+    ['Full service + planning','For self-employed, business, prior years and IRS letters.',['Everything in Meet with a preparer','Self-employed and small business','Prior-year returns and IRS notices']]],
+ cmp_t:'Compare options',cmp_inc:'What’s included',cmp:['A preparer files your return','Secure document upload','Return status in your portal','Meeting with your preparer','Self-employed and business income','Prior years and IRS notices'],
+ how_t:'How it works',how:[['Tell us about your taxes','Answer a few quick questions. It takes about 2 minutes.'],['Pick a time','Meet online or at our office, or just upload.'],['Upload your documents','Snap photos from your phone into your secure portal.'],['We file, you track','Follow every step until the IRS accepts your return.']],
+ local_t:'Local tax preparers are here for you',local_s:'In English or Spanish, from your phone or at our office.',trust:'Trust Center',staff:'Staff sign-in',entrances:'All entrances',
+ back:'Back',cont:'Continue',
+ w0_t:'Tell us what you’d like help with',w0_s:'We’ll send this to your preparer.',help:[`Filing my ${TY} taxes`,'Review or fix a past return','Filing for prior tax years','Tax advice and planning','Help with an IRS notice','Bookkeeping','Something else'],
+ w1_t:'Let’s find the right preparer for you',w1_s:'Select all that apply to your taxes.',inc:['Job (W-2)','Self-employed / gig work','Sold stock','Sold crypto','Retirement income','Multiple states','Rental property','Unemployment income','Other income'],
+ zip_q:'Where are you located?',zip_l:'Enter ZIP code',
+ w2_t:'Choose how to meet your preparer',m:[['Online (phone or video)','Connect from your device, wherever you are.'],['In person','Meet at our office: {a}'],['No meeting, just upload','Send your documents. We’ll reach out if we need anything.']],
+ w3_t:'Pick a time to meet',w3_s:'30-minute appointments · {h}',morning:'Morning',afternoon:'Afternoon',tod:'Select a time of day',slot_l:'Select a time slot (CST)',no_slots:'No times left. Try another day.',
+ w4_t:'Finding the right preparer for you and your taxes',w4_s:'Looking for experience in:',acc:'Reviewed by a real preparer before filing',
+ w5_t:'Share your info with {n} to confirm your appointment',w5_up:'Share your info with {n} to open your portal',
+ first:'First name',last:'Last name',email:'Email address',phone:'Phone',discuss:'What do you want to discuss? (optional)',chars:'characters',lang:'Preferred language',
+ sms:'Text me reminders and updates about my appointment and return. Msg & data rates may apply. Reply STOP to opt out.',confirm:'Confirm appointment',open:'Create my portal',
+ yrs:'Tax preparer · {y} yrs',meets:'Meets online or in person',spec:'Specialties',langs:'Languages',close:'Close',about:'About',
+ yours:'Your appointment',online:'Online',person:'In person',upload:'Upload only',change:'Change',
+ w6_t:'Check your {v}',w6_s:'We sent a 6-digit code to {to}. No password needed.',v_email:'email',v_phone:'phone',demo:'Demo code (normally sent to you)',verify:'Verify and continue',resend:'Send a new code',use_other:'Use a different email or phone',to_email:'Send it to my email instead',to_phone:'Text it to my phone instead',
+ e_req:'Please fill in the required fields',e_email:'Enter a valid email address',e_phone:'Enter a 10-digit phone number',e_zip:'Enter a 5-digit ZIP code',e_code:'That code doesn’t match',e_pick:'Choose at least one option',e_time:'Pick a day and time',
+ nf:'We couldn’t find an account for {x}. Let’s create one, it only takes 2 minutes.',welcome:'Welcome! You’re signed in.',booked:'Appointment confirmed ✅'},
+es:{services:'Servicios',pricing:'Precios',hownav:'Cómo funciona',signup:'Registrarse',signin:'Iniciar sesión',other:'English',
+ hero_t:'Olvídese del estrés de los impuestos',hero_s:'Un preparador local hace su declaración por usted, desde su celular o en nuestra oficina.',get_started:'Comenzar',
+ refund:'Declaración enviada',yr:'Su declaración',accepted:'Aceptada por el IRS',docs_in:'Documentos recibidos',
+ si_t:'Ingrese a {n}',si_l:'Teléfono o correo electrónico',remember:'Recordarme',si_terms:'Al iniciar sesión, acepta nuestros Términos y nuestra Política de privacidad.',si_new:'¿Es nuevo?',create:'Crear una cuenta',
+ talk_t:'Hable con un preparador',talk_s:'Reserve una cita de 30 minutos, en línea o en persona.',schedule:'Agendar cita',call:'Llámenos',
+ opts_t:'Ayuda con sus impuestos a su medida',rec:'RECOMENDADO',starting:'Desde',pay_when:'Pague solo cuando declaremos',sample:'Precios de ejemplo. Cada oficina define los suyos.',
+ o:[['Suba sus documentos y nosotros declaramos','Envíe sus documentos desde su celular. Nosotros preparamos y declaramos.',['Tome foto de su W-2 o 1099','Un preparador revisa todo','Siga su declaración en su portal']],
+    ['Reúnase con un preparador','Revise su declaración con un preparador, en línea o en persona.',['Todo lo de “Suba sus documentos”','Cita de 30 minutos por teléfono, video o en la oficina','Haga preguntas en el camino']],
+    ['Servicio completo + planeación','Para trabajadores independientes, negocios, años anteriores y cartas del IRS.',['Todo lo de “Reúnase con un preparador”','Trabajo independiente y pequeños negocios','Años anteriores y cartas del IRS']]],
+ cmp_t:'Compare opciones',cmp_inc:'Qué incluye',cmp:['Un preparador hace su declaración','Subida segura de documentos','Estado de su declaración en su portal','Cita con su preparador','Ingresos independientes y de negocio','Años anteriores y cartas del IRS'],
+ how_t:'Cómo funciona',how:[['Cuéntenos sobre sus impuestos','Conteste unas preguntas rápidas. Toma unos 2 minutos.'],['Elija una hora','En línea, en nuestra oficina o solo suba documentos.'],['Suba sus documentos','Tome fotos con su celular y súbalas a su portal seguro.'],['Declaramos y usted da seguimiento','Vea cada paso hasta que el IRS acepte su declaración.']],
+ local_t:'Preparadores locales aquí para ayudarle',local_s:'En inglés o español, desde su celular o en nuestra oficina.',trust:'Centro de confianza',staff:'Acceso del personal',entrances:'Todas las entradas',
+ back:'Atrás',cont:'Continuar',
+ w0_t:'Díganos con qué necesita ayuda',w0_s:'Se lo enviaremos a su preparador.',help:[`Declarar mis impuestos ${TY}`,'Revisar o corregir una declaración pasada','Declarar años anteriores','Asesoría y planeación fiscal','Ayuda con una carta del IRS','Contabilidad','Otra cosa'],
+ w1_t:'Encontremos al preparador ideal para usted',w1_s:'Seleccione todo lo que aplique a sus impuestos.',inc:['Empleo (W-2)','Independiente / trabajo por app','Venta de acciones','Venta de cripto','Ingresos de jubilación','Varios estados','Propiedad de renta','Desempleo','Otros ingresos'],
+ zip_q:'¿Dónde se encuentra?',zip_l:'Código postal',
+ w2_t:'Elija cómo reunirse con su preparador',m:[['En línea (teléfono o video)','Conéctese desde su dispositivo, donde esté.'],['En persona','En nuestra oficina: {a}'],['Sin cita, solo subir documentos','Envíe sus documentos. Le contactamos si necesitamos algo.']],
+ w3_t:'Elija una hora para su cita',w3_s:'Citas de 30 minutos · {h}',morning:'Mañana',afternoon:'Tarde',tod:'Elija el horario',slot_l:'Elija una hora (CST)',no_slots:'No quedan horarios. Pruebe otro día.',
+ w4_t:'Buscando el preparador ideal para usted y sus impuestos',w4_s:'Buscando experiencia en:',acc:'Revisado por un preparador real antes de declarar',
+ w5_t:'Comparta sus datos con {n} para confirmar su cita',w5_up:'Comparta sus datos con {n} para abrir su portal',
+ first:'Nombre',last:'Apellido',email:'Correo electrónico',phone:'Teléfono',discuss:'¿De qué quiere hablar? (opcional)',chars:'caracteres',lang:'Idioma preferido',
+ sms:'Envíenme recordatorios y avisos sobre mi cita y mi declaración por mensaje de texto. Pueden aplicar tarifas. Responda STOP para cancelar.',confirm:'Confirmar cita',open:'Crear mi portal',
+ yrs:'Preparador de impuestos · {y} años',meets:'Atiende en línea o en persona',spec:'Especialidades',langs:'Idiomas',close:'Cerrar',about:'Acerca de',
+ yours:'Su cita',online:'En línea',person:'En persona',upload:'Solo subir documentos',change:'Cambiar',
+ w6_t:'Revise su {v}',w6_s:'Enviamos un código de 6 dígitos a {to}. No necesita contraseña.',v_email:'correo',v_phone:'teléfono',demo:'Código de demostración (normalmente se le envía)',verify:'Verificar y continuar',resend:'Enviar un código nuevo',use_other:'Usar otro correo o teléfono',to_email:'Enviarlo a mi correo',to_phone:'Enviarlo por mensaje de texto',
+ e_req:'Complete los campos requeridos',e_email:'Escriba un correo válido',e_phone:'Escriba un teléfono de 10 dígitos',e_zip:'Escriba un código postal de 5 dígitos',e_code:'El código no coincide',e_pick:'Elija al menos una opción',e_time:'Elija un día y una hora',
+ nf:'No encontramos una cuenta con {x}. Creemos una, solo toma 2 minutos.',welcome:'¡Bienvenido! Ya inició sesión.',booked:'Cita confirmada ✅'}
+};
+try{UI.lang=localStorage.getItem('mtcp_lang')||'en';}catch(e){UI.lang='en';}
+const t=(k,v={})=>{let s=(L[UI.lang]||L.en)[k];if(s==null)s=L.en[k];if(typeof s==='string')for(const x in v)s=s.replace('{'+x+'}',v[x]);return s;};
+const TAGS=['w2','self','stock','crypto','retire','states','rental','unemp','other'];
+const TAG_LABEL={en:{w2:'W-2 and families',self:'Self-employed / gig work',stock:'Stock',crypto:'Crypto',retire:'Retirement income',states:'Multiple states',rental:'Rental property',unemp:'Unemployment',other:'Other income',itin:'ITIN filers',prior:'Prior-year returns',irs:'IRS notices',biz:'Small business',books:'Bookkeeping'},
+  es:{w2:'W-2 y familias',self:'Independientes / trabajo por app',stock:'Acciones',crypto:'Cripto',retire:'Jubilación',states:'Varios estados',rental:'Propiedades de renta',unemp:'Desempleo',other:'Otros ingresos',itin:'Contribuyentes con ITIN',prior:'Años anteriores',irs:'Cartas del IRS',biz:'Pequeños negocios',books:'Contabilidad'}};
+const PROFILES={a1:{yrs:8,langs:['English','Español'],tags:['w2','self','itin','prior','unemp'],color:'#2E6B4C',bio:{en:'I help families and gig workers file with confidence, in English or Spanish. I’ll explain every line of your return in plain words.',es:'Ayudo a familias y trabajadores por app a declarar con confianza, en inglés o español. Le explico cada parte de su declaración con palabras sencillas.'}},
+  a2:{yrs:12,langs:['English'],tags:['retire','stock','crypto','rental','states'],color:'#2F5E8C',bio:{en:'Retirement income, investments and rental property are my focus. I make sure nothing gets missed.',es:'Me especializo en jubilación, inversiones y propiedades de renta. Me aseguro de que no se pase nada por alto.'}},
+  a3:{yrs:5,langs:['English','Español'],tags:['self','biz','irs','books','prior'],color:'#8A4B2A',bio:{en:'Self-employed and small-business owners are my people. I also help clear up IRS letters and back taxes.',es:'Trabajo con independientes y dueños de pequeños negocios. También ayudo con cartas del IRS y años atrasados.'}}};
+const prof=a=>PROFILES[a.id]||{yrs:3,langs:['English'],tags:['w2'],color:'#5B6770',bio:{en:'Tax preparer at '+S.settings.name+'.',es:'Preparador de impuestos en '+S.settings.name+'.'}};
+const initials=n=>n.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase();
+const digits=s=>String(s||'').replace(/\D/g,'');
+const fmtPhone=s=>{const d=digits(s).slice(-10);return d.length===10?`(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`:s;};
+const OFFICE_ADDR='5373 W Alabama St, Houston, TX';
+function newWz(){return {step:0,help:[],inc:[],zip:'',mode:'',month:0,date:'',part:'am',time:'',agentId:'',first:'',last:'',email:'',phone:'',discuss:'',lang:UI.lang==='es'?'Español':'English',sms:true,code:'',profile:false};}
+UI.wz=newWz();UI.si={step:'id',id:'',code:'',to:''};
+
+function pubHead(){return `<header class="phead"><a href="#" class="pbrand" data-act="go" data-s="home">${logo('sm')}<b>${esc(S.settings.name)}</b></a>
+  <nav class="plinks"><a href="#opts" data-act="jump" data-to="opts">${t('services')}</a><a href="#cmp" data-act="jump" data-to="cmp">${t('pricing')}</a><a href="#how" data-act="jump" data-to="how">${t('hownav')}</a></nav>
+  <span class="sp"></span><button class="lnk" data-act="lang">🌐 ${t('other')}</button>
+  <button class="pbtn ghost" data-act="startWz">${t('signup')}</button><button class="pbtn" data-act="go" data-s="signin">🔒 ${t('signin')}</button></header>`;}
+function heroArt(){return `<svg class="art" viewBox="0 0 520 380" aria-hidden="true"><defs><linearGradient id="gA" x1="0" x2="1"><stop offset="0" stop-color="var(--green-l)"/><stop offset="1" stop-color="var(--green)"/></linearGradient></defs>
+  <ellipse cx="260" cy="360" rx="210" ry="14" fill="rgba(0,0,0,.06)"/>
+  <g transform="translate(150 20)"><rect width="190" height="340" rx="30" fill="#1D2520"/><rect x="10" y="12" width="170" height="316" rx="22" fill="#fff"/><rect x="70" y="20" width="50" height="8" rx="4" fill="#1D2520"/>
+  <text x="26" y="62" font-family="Source Serif 4,Georgia" font-weight="700" font-size="15" fill="#1D2520">${esc(t('yr'))}</text>
+  ${[0,1,2,3].map(i=>`<g transform="translate(26 ${84+i*46})"><circle cx="11" cy="11" r="11" fill="${i<3?'var(--green)':'#E7E2D4'}"/>${i<3?'<path d="M6 11l3.5 3.5L16 8" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round"/>':''}<rect x="32" y="4" width="${[96,80,104,70][i]}" height="7" rx="3.5" fill="#D9D3C2"/><rect x="32" y="15" width="${[60,72,50,64][i]}" height="5" rx="2.5" fill="#EEEAE0"/></g>`).join('')}
+  <rect x="26" y="276" width="138" height="34" rx="17" fill="url(#gA)"/><text x="95" y="298" text-anchor="middle" font-family="Inter" font-weight="700" font-size="12" fill="#fff">${esc(t('get_started'))}</text></g>
+  <g transform="translate(0 92)"><rect width="196" height="92" rx="16" fill="#fff" stroke="#E3DCCB"/><circle cx="30" cy="32" r="14" fill="#EAF7F1"/><path d="M23 32l5 5 9-10" stroke="var(--green)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+  <text x="52" y="30" font-family="Inter" font-weight="700" font-size="12" fill="#1D2520">${esc(t('refund'))}</text><text x="52" y="46" font-family="Inter" font-size="10.5" fill="#66706A">${esc(t('accepted'))}</text>
+  <rect x="18" y="62" width="160" height="8" rx="4" fill="#EEEAE0"/><rect x="18" y="62" width="160" height="8" rx="4" fill="var(--gold)"/></g>
+  <g transform="translate(326 222)"><rect width="194" height="70" rx="16" fill="#fff" stroke="#E3DCCB"/><rect x="16" y="16" width="30" height="38" rx="5" fill="#F6F2E8" stroke="#D9D3C2"/><rect x="22" y="25" width="18" height="3" rx="1.5" fill="#B9B29E"/><rect x="22" y="32" width="14" height="3" rx="1.5" fill="#B9B29E"/>
+  <text x="58" y="33" font-family="Inter" font-weight="700" font-size="12" fill="#1D2520">W-2 · 1099</text><text x="58" y="50" font-family="Inter" font-size="10" fill="var(--green)">✓ ${esc(t('docs_in'))}</text></g></svg>`;}
+function siForm(compact){const s=UI.si;let rem='';try{rem=localStorage.getItem('mtcp_remember')||'';}catch(e){}
+  if(s.step==='code')return `<p class="muted" style="margin:0 0 12px">${t('w6_s',{to:'<b>'+esc(s.to)+'</b>'})}</p>
+    <input class="i code" id="siCode" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="one-time-code">
+    <div class="demoNote" style="margin-top:10px">${t('demo')}: <b>${s.code}</b></div>
+    <button class="pbtn wide" style="margin-top:14px" data-act="siVerify">${t('verify')}</button>
+    <div class="row" style="justify-content:space-between;margin-top:10px"><a href="#" data-act="siResend" class="small">${t('resend')}</a><a href="#" data-act="siBack" class="small">${t('use_other')}</a></div>`;
+  return `<label class="f">${t('si_l')}<input class="i" id="siId" autocomplete="username" value="${esc(s.id||rem)}" placeholder="(713) 555-0142 · you@email.com"></label>
+    <label class="row small" style="margin:12px 0"><input type="checkbox" id="siRem" ${rem?'checked':''} style="width:20px;height:20px;accent-color:var(--green)"> ${t('remember')}</label>
+    <button class="pbtn wide" data-act="siGo">🔒 ${t('signin')}</button>
+    ${s.nf?`<div class="demoNote" style="margin-top:12px">${t('nf',{x:esc(s.id)})}<div style="margin-top:8px"><button class="pbtn sm" data-act="startWz">${t('create')}</button></div></div>`:''}
+    <p class="tiny">${t('si_terms')}</p><p style="text-align:center;margin:8px 0 0">${t('si_new')} <a href="#" data-act="startWz"><b>${t('create')}</b></a></p>
+    ${compact?'':'<div class="demoNote" style="margin-top:12px">Demo: try <b>maria@example.com</b> or <b>(713) 555-0142</b></div>'}`;}
+
+function home(){const st=S.settings,pr=[st.price0||'$149',st.price1||'$199',st.price2||'$299'];const O=t('o');
+  return `<div class="pub">${pubHead()}
+  <section class="hero"><div class="heroCard"><h1 class="ph1">${t('hero_t')}</h1><p class="plead">${t('hero_s')}</p><button class="pbtn lg" data-act="startWz">${t('get_started')}</button>${heroArt()}</div>
+  <div class="heroSide"><div class="siCard">${logo()}<h2 style="margin:14px 0 16px">${t('si_t',{n:esc(st.name)})}</h2>${siForm(true)}</div>
+  <div class="talk"><h3>📅 ${t('talk_t')}</h3><p class="muted" style="margin:6px 0 12px">${t('talk_s')}</p><div class="row"><button class="pbtn sm" data-act="startWz">${t('schedule')}</button><a class="pbtn sm ghost" href="tel:${digits(st.phone)}">📞 ${t('call')} ${esc(st.phone)}</a></div></div></div></section>
+  <section class="band" id="opts"><h2 class="ph2">${t('opts_t')}</h2><div class="opts">${O.map((o,i)=>`<div class="opt ${i===1?'rec':''}">${i===1?`<div class="recBar">${t('rec')}</div>`:''}<div class="optIn"><div class="optN">${logo('xs')} ${o[0]}</div><p class="optD">${o[1]}</p><div class="muted small">${t('starting')}</div><div class="price">${esc(pr[i])}</div>
+    <button class="pbtn wide sq" data-act="startWz" data-mode="${['upload','online','online'][i]}">${t('get_started')}<small>${t('pay_when')}</small></button></div><ul class="optL">${o[2].map(x=>`<li>✓ ${x}</li>`).join('')}</ul></div>`).join('')}</div><p class="tiny" style="text-align:center">${t('sample')}</p></section>
+  <section class="band" id="how" style="background:var(--cream)"><h2 class="ph2">${t('how_t')}</h2><div class="steps4">${t('how').map((h,i)=>`<div class="st4"><b class="num">${i+1}</b><h3>${h[0]}</h3><p class="muted small">${h[1]}</p></div>`).join('')}</div></section>
+  <section class="band" id="cmp"><h2 class="ph2">${t('cmp_t')}</h2><div class="tw" style="max-width:1000px;margin:0 auto"><table class="cmpT"><tr><th>${t('cmp_inc')}</th>${O.map(o=>`<th style="text-align:center">${o[0]}</th>`).join('')}</tr>
+    ${t('cmp').map((r,i)=>`<tr><td>${r}</td>${[0,1,2].map(c=>`<td style="text-align:center">${[[1,1,1],[1,1,1],[1,1,1],[0,1,1],[0,0,1],[0,0,1]][i][c]?'<span class="ck">✓</span>':''}</td>`).join('')}</tr>`).join('')}
+    <tr><td></td>${[0,1,2].map(i=>`<td style="text-align:center"><button class="pbtn sm" data-act="startWz">${t('get_started')}</button></td>`).join('')}</tr></table></div></section>
+  <section class="band local"><div><h2 class="ph2" style="text-align:left">${t('local_t')}</h2><p class="plead">${t('local_s')}</p><div class="row"><button class="pbtn lg" data-act="startWz">${t('schedule')}</button><a class="pbtn lg ghost" href="tel:${digits(st.phone)}">📞 ${t('call')}</a></div></div>
+    <div class="team">${S.agents.filter(a=>a.active).slice(0,3).map(a=>`<div class="tm"><div class="av" style="background:${prof(a).color}">${initials(a.name)}</div><b>${esc(a.name.split(' ')[0])}</b><span class="muted small">${prof(a).langs.join(' · ')}</span></div>`).join('')}</div></section>
+  <footer class="pfoot"><a href="#" data-act="go" data-s="trust">${t('trust')}</a><a href="#" data-act="go" data-s="officeLogin">${t('staff')}</a><a href="#" data-act="go" data-s="gate">${t('entrances')}</a><span>© ${new Date().getFullYear()} ${esc(st.name)}</span></footer></div>`;}
+
+function signinPage(){return `<div class="pub"><div class="sibar"><span class="muted small">${t('si_new')}</span><button class="pbtn sm ghost" data-act="startWz">${t('create')}</button><button class="lnk" data-act="lang">🌐 ${t('other')}</button></div>
+  <div class="siWrap"><div class="siCard solo"><div style="text-align:center">${logo()}<h2 style="margin:14px 0 18px">${t('si_t',{n:esc(S.settings.name)})}</h2></div>${siForm()}</div></div>
+  <footer class="pfoot"><a href="#" data-act="go" data-s="home">← ${esc(S.settings.name)}</a><a href="#" data-act="go" data-s="trust">${t('trust')}</a><a href="#" data-act="go" data-s="officeLogin">${t('staff')}</a></footer></div>`;}
+
+/* ---------- Get-started wizard ---------- */
+function matchAgent(w){const want=w.inc.map(i=>TAGS[i]);if(w.help.includes(4))want.push('irs');if(w.help.includes(2)||w.help.includes(1))want.push('prior');if(w.help.includes(5))want.push('books');
+  const es=w.lang==='Español';let best=null,score=-1;S.agents.filter(a=>a.active).forEach(a=>{const p=prof(a);let s=want.filter(x=>p.tags.includes(x)).length*2+(es&&p.langs.includes('Español')?3:0)-S.clients.filter(c=>c.agentId===a.id&&c.stage<3).length*.1;if(s>score){score=s;best=a;}});return best||S.agents[0];}
+function slotsFor(date,part){const taken=takenSlots(date),out=[];for(let h=part==='am'?9:12;h<(part==='am'?12:18);h++)for(const m of ['00','30']){const s=`${String(h).padStart(2,'0')}:${m}`;if(!taken.has(s))out.push(s);}return out;}
+function calendar(w){const base=new Date();base.setDate(1);base.setMonth(base.getMonth()+w.month);const y=base.getFullYear(),mo=base.getMonth(),first=new Date(y,mo,1).getDay(),days=new Date(y,mo+1,0).getDate();
+  const today=new Date();today.setHours(0,0,0,0);const max=new Date(today.getTime()+60*DAY);const cells=[];for(let i=0;i<first;i++)cells.push('<span></span>');
+  for(let d=1;d<=days;d++){const dt=new Date(y,mo,d),ds=`${y}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;const off=dt<=today||dt>max||dt.getDay()===0;cells.push(`<button data-act="wzDate" data-d="${ds}" class="${w.date===ds?'on':''}" ${off?'disabled':''}>${d}</button>`);}
+  const ml=base.toLocaleDateString(UI.lang==='es'?'es-US':'en-US',{month:'long',year:'numeric'});
+  return `<div class="calBox"><div class="row" style="justify-content:space-between;margin-bottom:10px"><button class="lnk big" data-act="wzMonth" data-d="-1" ${w.month<=0?'disabled':''} aria-label="Previous month">‹</button><b style="text-transform:capitalize">${ml}</b><button class="lnk big" data-act="wzMonth" data-d="1" ${w.month>=2?'disabled':''} aria-label="Next month">›</button></div>
+  <div class="cal">${(UI.lang==='es'?['D','L','M','M','J','V','S']:['S','M','T','W','T','F','S']).map(x=>`<b>${x}</b>`).join('')}${cells.join('')}</div></div>`;}
+function dateLabel(ds){return new Date(ds+'T12:00').toLocaleDateString(UI.lang==='es'?'es-US':'en-US',{weekday:'long',month:'long',day:'numeric'});}
+function wzStepsTotal(w){return w.mode==='upload'?5:6;}
+function wizard(){const w=UI.wz,st=S.settings;const total=7,pct=Math.round((w.step+1)/total*100);let body='',foot=true,canGo=true;
+  const ag=w.agentId?agentOf(w.agentId):null;
+  if(w.step===0){body=`<h1 class="wzH">${t('w0_t')}</h1><p class="muted">${t('w0_s')}</p><div class="chipsQ">${t('help').map((h,i)=>`<button class="chipq ${w.help.includes(i)?'on':''}" data-act="wzToggle" data-k="help" data-i="${i}" aria-pressed="${w.help.includes(i)}">${h}</button>`).join('')}</div>`;}
+  else if(w.step===1){body=`<h1 class="wzH">${t('w1_t')}</h1><p class="muted">${t('w1_s')}</p><div class="chipsQ">${t('inc').map((h,i)=>`<button class="chipq ${w.inc.includes(i)?'on':''}" data-act="wzToggle" data-k="inc" data-i="${i}" aria-pressed="${w.inc.includes(i)}">${h}</button>`).join('')}</div>
+    <h2 style="margin-top:34px;font-family:var(--ui);font-weight:500">${t('zip_q')}</h2><label class="f" style="max-width:340px;margin-top:10px">${t('zip_l')}<input class="i" id="wzZip" inputmode="numeric" maxlength="5" value="${esc(w.zip)}" placeholder="77056"></label>`;}
+  else if(w.step===2){const M=t('m');body=`<h1 class="wzH">${t('w2_t')}</h1><div class="choices">${['online','person','upload'].map((k,i)=>`<button class="choice ${w.mode===k?'on':''}" data-act="wzMode" data-m="${k}"><b>${M[i][0]}</b><span>${M[i][1].replace('{a}',OFFICE_ADDR)}</span></button>`).join('')}</div>`;canGo=!!w.mode;}
+  else if(w.step===3){if(!w.date){const d=apptDays()[0];w.date=d;}const sl=slotsFor(w.date,w.part);
+    body=`<h1 class="wzH">${t('w3_t')}</h1><p class="muted">${t('w3_s',{h:esc(st.hours)})} · ${w.mode==='person'?t('person'):t('online')}</p><div class="pick">${calendar(w)}
+    <div><h3 style="font-family:var(--ui);font-weight:600;font-size:19px;text-transform:capitalize">${dateLabel(w.date)}</h3><p class="small muted" style="margin:14px 0 8px">${t('tod')}</p>
+    <div class="row"><button class="chipq ${w.part==='am'?'on':''}" data-act="wzPart" data-p="am">${t('morning')}</button><button class="chipq ${w.part==='pm'?'on':''}" data-act="wzPart" data-p="pm">${t('afternoon')}</button></div>
+    <p class="small muted" style="margin:16px 0 8px">${t('slot_l')}</p><div class="slotGrid">${sl.length?sl.map(s=>`<button class="slotb ${w.time===s?'on':''}" data-act="wzTime" data-t="${s}">${slotLabel(s)}</button>`).join(''):`<span class="muted">${t('no_slots')}</span>`}</div></div></div>`;canGo=!!w.time;}
+  else if(w.step===4){foot=false;const tags=w.inc.length?w.inc.map(i=>t('inc')[i]):[t('help')[w.help[0]??0]];
+    body=`<div style="text-align:center;padding:20px 0"><h1 class="wzH">${t('w4_t')}</h1><div class="pulse"><div class="av xl" style="background:var(--green)">${logo('xs')}</div></div><p style="font-weight:600">${t('w4_s')}</p>
+    <div class="matchList">${tags.slice(0,4).map((x,i)=>`<div style="animation-delay:${i*.35}s">✓ ${esc(x)}</div>`).join('')}<div style="animation-delay:${Math.min(tags.length,4)*.35}s">✓ ${t('acc')}</div></div></div>`;}
+  else if(w.step===5){const p=prof(ag);body=`<h1 class="wzH" style="text-align:center">${(w.mode==='upload'?t('w5_up'):t('w5_t')).replace('{n}','<b>'+esc(ag.name.split(' ')[0])+'</b>')}</h1>
+    <button class="prepCard" data-act="wzProfile"><div class="av" style="background:${p.color}">${initials(ag.name)}</div><div style="flex:1"><b style="font-size:19px">${esc(ag.name)}</b><div class="small">${t('yrs',{y:p.yrs})} · ${p.langs.join(' / ')}</div><div class="small muted">${t('meets')}</div></div><span style="font-size:22px">›</span></button>
+    ${w.mode!=='upload'?`<div class="apptSum">📅 <b style="text-transform:capitalize">${dateLabel(w.date)} · ${slotLabel(w.time)}</b> · ${w.mode==='person'?t('person'):t('online')} <a href="#" data-act="wzGoto" data-s="3" class="small">${t('change')}</a></div>`:''}
+    <div class="formCol"><div class="grid2"><label class="f">${t('first')} <span class="req">*</span><input class="i" id="wFirst" autocomplete="given-name" value="${esc(w.first)}"></label><label class="f">${t('last')} <span class="req">*</span><input class="i" id="wLast" autocomplete="family-name" value="${esc(w.last)}"></label></div>
+    <label class="f">${t('email')} <span class="req">*</span><input class="i" id="wEmail" type="email" autocomplete="email" value="${esc(w.email)}"></label>
+    <label class="f">${t('phone')} <span class="req">*</span><input class="i" id="wPhone" type="tel" autocomplete="tel" value="${esc(w.phone)}" placeholder="(713) 555-0100"></label>
+    <label class="f">${t('lang')}<select class="i" id="wLang">${['English','Español'].map(x=>`<option ${w.lang===x?'selected':''}>${x}</option>`).join('')}</select></label>
+    <label class="f">${t('discuss')}<textarea class="i" id="wDisc" rows="3" maxlength="300">${esc(w.discuss)}</textarea><span class="hint" id="wCnt">${w.discuss.length}/300 ${t('chars')}</span></label>
+    <label class="row small" style="align-items:flex-start;flex-wrap:nowrap"><input type="checkbox" id="wSms" ${w.sms?'checked':''} style="width:20px;height:20px;flex:none;accent-color:var(--green);margin-top:2px"> <span>${t('sms')}</span></label></div>`;}
+  else if(w.step===6){foot=false;const via=w.via;body=`<div class="siCard solo" style="margin:10px auto"><div style="text-align:center">${logo()}<h2 style="margin:14px 0 6px">${t('w6_t',{v:t(via==='phone'?'v_phone':'v_email')})}</h2></div>
+    <p class="muted" style="text-align:center">${t('w6_s',{to:'<b>'+esc(via==='phone'?fmtPhone(w.phone):w.email)+'</b>'})}</p>
+    <input class="i code" id="wzCode" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="one-time-code"><div class="demoNote" style="margin-top:10px">${t('demo')}: <b>${w.code}</b></div>
+    <button class="pbtn wide" style="margin-top:14px" data-act="wzVerify">${t('verify')}</button><div class="row" style="justify-content:space-between;margin-top:10px"><a href="#" class="small" data-act="wzVia">${via==='phone'?t('to_email'):t('to_phone')}</a><a href="#" class="small" data-act="wzResend">${t('resend')}</a></div></div>`;}
+  const nextLbl=w.step===5?(w.mode==='upload'?t('open'):t('confirm')):t('cont');
+  return `<div class="pub"><div class="wzTop"><a href="#" class="pbrand" data-act="go" data-s="home">${logo('sm')}<b>${esc(st.name)}</b></a><div class="row"><button class="lnk" data-act="lang">🌐 ${t('other')}</button><a class="pbtn sm ghost" href="tel:${digits(st.phone)}">${t('call')}</a></div></div>
+  <div class="prog"><i style="width:${pct}%"></i></div><main class="wz">${body}
+  ${foot?`<div class="wzFoot"><button class="lnk big" data-act="wzBack">‹ ${t('back')}</button><button class="pbtn sq" data-act="wzNext" ${canGo?'':'disabled'}>${nextLbl}</button></div>`:''}</main></div>
+  ${w.profile&&ag?profileModal(ag):''}`;}
+function profileModal(a){const p=prof(a);return `<div class="ovl" data-act="wzProfileClose"><div class="modal" style="max-width:760px"><div class="pm"><div><div class="av sq" style="background:${p.color}">${initials(a.name)}</div><button class="pbtn wide sq" style="margin-top:14px" data-act="wzProfileClose">${t('close')}</button></div>
+  <div><h2>${esc(a.name)}</h2><p class="small" style="margin:6px 0 0">${t('yrs',{y:p.yrs})}<br>${t('meets')}</p><h3 style="margin-top:16px;font-family:var(--ui)">${t('spec')}</h3><div class="row" style="margin-top:8px">${p.tags.map(x=>`<span class="tagS">${TAG_LABEL[UI.lang==='es'?'es':'en'][x]||x}</span>`).join('')}</div>
+  <h3 style="margin-top:16px;font-family:var(--ui)">${t('langs')}</h3><p class="small" style="margin:4px 0">${p.langs.join(' · ')}</p><h3 style="margin-top:16px;font-family:var(--ui)">${t('about')}</h3><p style="margin:4px 0">${esc(p.bio[UI.lang==='es'?'es':'en'])}</p><p class="tiny">Sample profile</p></div></div></div></div>`;}
+
+Object.assign(A,{
+  lang:()=>{UI.lang=UI.lang==='es'?'en':'es';try{localStorage.setItem('mtcp_lang',UI.lang);}catch(e){}render();},
+  jump:(el)=>{const n=document.getElementById(el.dataset.to);if(n)n.scrollIntoView({behavior:'smooth'});},
+  startWz:(el)=>{UI.wz=newWz();if(el&&el.dataset.mode)UI.wz.prefMode=el.dataset.mode;UI.screen='start';render();scrollTo(0,0);},
+  siGo:()=>{const id=document.getElementById('siId').value.trim();const rem=document.getElementById('siRem')?.checked;UI.si.id=id;UI.si.nf=false;
+    const d=digits(id),isEmail=id.includes('@');if(!id)return toast(t('e_req'));if(isEmail&&!/^\S+@\S+\.\S+$/.test(id))return toast(t('e_email'));if(!isEmail&&d.length<10)return toast(t('e_phone'));
+    const c=S.clients.find(x=>isEmail?x.email===id.toLowerCase():digits(x.info.tp.phone).slice(-10)===d.slice(-10));
+    try{rem?localStorage.setItem('mtcp_remember',id):localStorage.removeItem('mtcp_remember');}catch(e){}
+    if(!c){UI.si.nf=true;render();return;}
+    UI.si={step:'code',id,cid:c.id,to:isEmail?id:fmtPhone(id),code:String(Math.floor(100000+Math.random()*900000))};render();setTimeout(()=>document.getElementById('siCode')?.focus(),60);},
+  siVerify:()=>{const v=document.getElementById('siCode').value.trim();if(v!==UI.si.code)return toast(t('e_code'));S.session={role:'client',id:UI.si.cid};UI.si={step:'id',id:''};UI.tab='overview';UI.screen='app';save();render();scrollTo(0,0);toast(t('welcome'));},
+  siResend:()=>{UI.si.code=String(Math.floor(100000+Math.random()*900000));render();},
+  siBack:()=>{UI.si={step:'id',id:''};render();},
+  wzToggle:(el)=>{const w=UI.wz,k=el.dataset.k,i=+el.dataset.i,a=w[k],p=a.indexOf(i);p>-1?a.splice(p,1):a.push(i);if(k==='inc')w.zip=document.getElementById('wzZip')?.value||w.zip;render();},
+  wzMode:(el)=>{UI.wz.mode=el.dataset.m;render();},
+  wzMonth:(el)=>{UI.wz.month=Math.max(0,Math.min(2,UI.wz.month+ +el.dataset.d));render();},
+  wzDate:(el)=>{UI.wz.date=el.dataset.d;UI.wz.time='';render();},
+  wzPart:(el)=>{UI.wz.part=el.dataset.p;UI.wz.time='';render();},
+  wzTime:(el)=>{UI.wz.time=el.dataset.t;render();},
+  wzGoto:(el)=>{captureWz();UI.wz.step=+el.dataset.s;render();},
+  wzProfile:()=>{captureWz();UI.wz.profile=true;render();},
+  wzProfileClose:(el,e)=>{if(e.target===el||el.tagName==='BUTTON'){UI.wz.profile=false;render();}},
+  wzBack:()=>{const w=UI.wz;captureWz();if(w.step===0){UI.screen='home';render();return;}w.step--;if(w.step===4)w.step=w.mode==='upload'?2:3;if(w.step===3&&w.mode==='upload')w.step=2;render();scrollTo(0,0);},
+  wzNext:()=>{const w=UI.wz;captureWz();
+    if(w.step===0&&!w.help.length)return toast(t('e_pick'));
+    if(w.step===1){if(!w.inc.length)return toast(t('e_pick'));if(!/^\d{5}$/.test(w.zip))return toast(t('e_zip'));if(!w.mode&&w.prefMode)w.mode=w.prefMode;}
+    if(w.step===3&&(!w.date||!w.time))return toast(t('e_time'));
+    if(w.step===5){if(!w.first||!w.last)return toast(t('e_req'));if(!/^\S+@\S+\.\S+$/.test(w.email))return toast(t('e_email'));if(digits(w.phone).length<10)return toast(t('e_phone'));
+      w.code=String(Math.floor(100000+Math.random()*900000));w.via=w.sms?'phone':'email';w.step=6;render();scrollTo(0,0);setTimeout(()=>document.getElementById('wzCode')?.focus(),60);return;}
+    w.step++;if(w.step===3&&w.mode==='upload')w.step=4;
+    if(w.step===4){render();scrollTo(0,0);w.agentId=matchAgent(w).id;const tk=token;setTimeout(()=>{if(UI.screen==='start'&&UI.wz===w&&w.step===4){w.step=5;render();}},2600);return;}
+    render();scrollTo(0,0);},
+  wzVia:()=>{const w=UI.wz;w.via=w.via==='phone'?'email':'phone';w.code=String(Math.floor(100000+Math.random()*900000));render();},
+  wzResend:()=>{UI.wz.code=String(Math.floor(100000+Math.random()*900000));render();},
+  wzVerify:()=>{const w=UI.wz,v=document.getElementById('wzCode').value.trim();if(v!==w.code)return toast(t('e_code'));finishWz(w);},
+});
+let token=0;
+function captureWz(){const w=UI.wz,g=id=>document.getElementById(id);if(g('wzZip'))w.zip=g('wzZip').value.trim();
+  if(g('wFirst')){w.first=g('wFirst').value.trim();w.last=g('wLast').value.trim();w.email=g('wEmail').value.trim().toLowerCase();w.phone=g('wPhone').value.trim();w.lang=g('wLang').value;w.discuss=g('wDisc').value;w.sms=g('wSms').checked;}}
+function finishWz(w){let c=S.clients.find(x=>x.email===w.email);const isNew=!c;
+  if(!c){c=blankClient(w.email,w.agentId);S.clients.push(c);c.info.tp.first=w.first;c.info.tp.last=w.last;c.info.tp.phone=fmtPhone(w.phone);}
+  c.intake={help:w.help.map(i=>L.en.help[i]),income:w.inc.map(i=>L.en.inc[i]),zip:w.zip,mode:w.mode,lang:w.lang,discuss:w.discuss,sms:w.sms,at:now()};
+  if(w.sms)c.ai=true;
+  if(w.mode!=='upload'){c.appts.push({id:uid(),date:w.date,time:w.time,mode:w.mode,status:'confirmed',at:now()});log(c,`Booked ${w.mode==='person'?'in-person':'online'} appointment ${w.date} ${slotLabel(w.time)} via website`);
+    notify('office',`New booking: ${w.first} ${w.last} · ${fmtD(new Date(w.date+'T12:00'))} ${slotLabel(w.time)} (${w.mode==='person'?'in person':'online'})`,true);}
+  else notify('office',`New upload-only client: ${w.first} ${w.last}`,true);
+  if(w.discuss)c.messages.push({from:'client',text:w.discuss,at:now(),unread:true});
+  log(c,`${isNew?'Signed up':'Signed in'} through the website · needs: ${c.intake.help.join(', ')} · income: ${c.intake.income.join(', ')}${w.sms?' · opted in to text updates':''}`);
+  S.session={role:'client',id:c.id};UI.wz=newWz();UI.tab='overview';UI.screen='app';save();render();scrollTo(0,0);toast(w.mode==='upload'?t('welcome'):t('booked'));}
+document.addEventListener('input',e=>{if(e.target.id==='wDisc'){const n=document.getElementById('wCnt');if(n)n.textContent=e.target.value.length+'/300 '+t('chars');}});
+document.addEventListener('keydown',e=>{if(e.key!=='Enter')return;const id=e.target.id;if(id==='siId')A.siGo();if(id==='siCode')A.siVerify();if(id==='wzCode')A.wzVerify();});
+
+
+/* ================== EVENTS ================== */
+document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el)return;if(el.tagName==='A'||el.tagName==='BUTTON')e.preventDefault();const f=A[el.dataset.act];if(f)f(el,e);});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.enter){e.preventDefault();A[e.target.dataset.enter](document.querySelector('[data-act="sendMsg"]'));}
+  if(e.key==='Enter'&&e.target.id==='aEmail')A.sendCode();if(e.key==='Enter'&&e.target.id==='aCode')A.verifyCode();if(e.key==='Escape')modal('');});
+document.addEventListener('input',e=>{const t=e.target,c=me();
+  if(t.dataset.f&&c&&t.type!=='radio'&&t.tagName!=='SELECT'){let v=t.value;if(t.dataset.live==='routing'){v=v.replace(/\D/g,'').slice(0,9);t.value=v;const ok=validRouting(v),h=document.getElementById('rHint');t.className='i '+(v?(ok?'good':'bad'):'');if(h){h.className='hint '+(v?(ok?'good':'bad'):'');h.textContent=v?(ok?'✓ Valid routing number':'Not a valid routing number — check the 9 digits'):'';}}
+    set(c,t.dataset.f,v);save();}
+  if(t.dataset.ssn){let d=t.value.replace(/\D/g,'').slice(0,9);t.value=d.length>5?`${d.slice(0,3)}-${d.slice(3,5)}-${d.slice(5)}`:d.length>3?`${d.slice(0,3)}-${d.slice(3)}`:d;if(d.length===9){set(c,t.dataset.ssn,enc(d));log(c,'SSN/ITIN saved (encrypted)');save();render();toast('Saved — stored encrypted and shown masked');}}
+  if(t.dataset.s!==undefined&&t.tagName==='INPUT'&&S.session?.role==='admin'){S.settings[t.dataset.s]=t.value;save();clearTimeout(window._st);window._st=setTimeout(render,500);}
+  if(t.id==='q'){UI.q=t.value;clearTimeout(window._qt);window._qt=setTimeout(()=>{render();const q=document.getElementById('q');if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length);}},250);}
+  if(t.dataset.cn){const cc=client(UI.cid);cc.notes=t.value;save();}
+});
+document.addEventListener('change',e=>{const t=e.target,c=me();
+  if(t.dataset.f&&c&&(t.type==='radio'||t.tagName==='SELECT')){set(c,t.dataset.f,t.value);save();render();}
+  if(t.dataset.up&&c){const files=[...t.files];if(!files.length)return;const arr=get(c,t.dataset.up);
+    files.forEach(f=>{const o={id:uid(),name:f.name,size:f.size,at:now()};if(t.dataset.up==='docs.forms')o.type=document.getElementById('fType').value;
+      if(t.dataset.up==='docs.rel'){const k=document.getElementById('relDep').value;o.type=document.getElementById('relType').value+(k!==''?' — '+(c.info.deps[+k]?.name||''):'');}arr.push(o);});
+    log(c,`Uploaded ${files.length} file(s)`);save();render();toast(`${files.length} file(s) uploaded · checked ✓`);}
+  if(t.id==='apDate'){UI.apptDate=t.value;UI.apptSlot='';render();}
+  if(t.id==='fAgent'){UI.fAgent=t.value;render();}
+  if(t.id==='fStage'){UI.fStage=t.value;render();}
+  if(t.id==='reassign'){const cc=client(UI.cid);cc.agentId=t.value;log(cc,`Reassigned to ${agentOf(t.value).name}`);save();render();toast('Client reassigned');}
+  if(t.dataset.cf){const cc=client(UI.cid);cc[t.dataset.cf]=t.value?new Date(t.value+'T12:00').getTime():null;save();}
+  if(t.dataset.actChange==='colorPick'){S.settings.color=t.value;save();render();}
+});
+
+load();render();setInterval(tick,5000);
+}
+</script>
+</body>
+</html>
