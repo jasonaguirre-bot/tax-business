@@ -403,6 +403,31 @@ h1{font-weight:700}.ph1{font-weight:800;letter-spacing:-.025em}.ph2,.wzH{font-we
 .door .u{color:var(--green)}
 .msg.me{background:var(--navy)}
 @media(max-width:760px){.nav.on{box-shadow:inset 0 -3px 0 var(--orange)}}
+
+/* ===== mobile fixes (audit Nov 2026) ===== */
+.tabs{scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:2px}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none}
+.pill,.btn,.pbtn,.chipNav,.slotb{flex-shrink:0}
+.tw table{min-width:600px}
+.door .u{overflow-wrap:anywhere}
+.tw th{min-width:max-content;letter-spacing:.04em}
+.tw{-webkit-overflow-scrolling:touch}
+@media(max-width:760px){
+  .tabs{margin:12px -14px 14px;padding:0 14px;mask-image:linear-gradient(90deg,#000 85%,transparent)}
+  .tab{padding:10px 10px;font-size:14px}
+  .top h1{font-size:24px}
+  .main h1{font-size:26px;overflow-wrap:anywhere}
+  .card{padding:15px}
+  .beta{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:6px;padding:6px 10px}
+  .beta::-webkit-scrollbar{display:none}
+  .beta>span{display:none}
+  .beta b{flex:none}
+  .beta button{flex:none;padding:5px 9px;font-size:12px}
+  .side{scrollbar-width:none;mask-image:linear-gradient(90deg,#000 88%,transparent)}
+  .side::-webkit-scrollbar{display:none}
+  .tw{mask-image:linear-gradient(90deg,#000 90%,transparent)}
+}
 </style>
 </head>
 <body>
