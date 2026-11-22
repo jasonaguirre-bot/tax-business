@@ -7,7 +7,7 @@
 <title>My Tax Client Portal — Beta</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 /*
 VOICE  calm, trustworthy back-office software for a tax office
@@ -283,6 +283,90 @@ pre.csv{background:#fff;border:1px solid var(--line);border-radius:9px;padding:1
 @media(prefers-reduced-motion:reduce){.pulse:before,.pulse:after{animation:none}.matchList div{animation:none;opacity:1}}
 @media(max-width:900px){.hero,.local{grid-template-columns:minmax(0,1fr)}.heroCard{min-height:0}.opts,.steps4{grid-template-columns:minmax(0,1fr)}.plinks{display:none}.pick{grid-template-columns:minmax(0,1fr)}.pm{grid-template-columns:minmax(0,1fr)}.av.sq{width:120px;height:120px;font-size:40px}.prog{margin-left:0}.optD{min-height:0}}
 @media(max-width:420px){.cal{grid-template-columns:repeat(7,38px);gap:4px}.cal button{width:38px;height:38px}.phead{gap:10px}.phead .pbtn{padding:7px 14px;min-height:40px;font-size:14px}}
+
+/* ===== TurboTax-style theme (white, bright blue, mint progress) ===== */
+:root{
+  --green:#236CFF;--green-d:#1A55D6;--green-l:#4C8BFF;--tint:rgba(35,108,255,.08);
+  --cream:#FAFAF8;--paper:#FFFFFF;--gold:#236CFF;--ink:#1F2A2F;--muted:#5E6A72;--line:#DCDFE3;
+  --blue2:#2F5DA8;--warm:#F3F3EF;--mint:#3FBF97;
+  --serif:'Figtree',system-ui,-apple-system,sans-serif;--ui:'Figtree',system-ui,-apple-system,sans-serif;
+}
+body{-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--ui);letter-spacing:-.01em}
+h1{font-weight:500}h2,h3{font-weight:600}
+.btn{border-radius:40px}
+.btn.gold{background:var(--green);border-color:var(--green);color:#fff}
+.sec{color:var(--muted);letter-spacing:.1em}
+.card{border-radius:18px;border-color:var(--line)}
+input.i,select.i,textarea.i{border-color:#8A9399;border-radius:6px}
+input.i:focus,select.i:focus,textarea.i:focus{outline:2px solid var(--green);outline-offset:0;border-color:var(--green)}
+.demoNote{background:#EEF4FF;border-color:#BFD3FF;color:#1D3B7A}
+/* public site */
+.pub{color:#1F2A2F}
+.pbtn{border-color:var(--green);background:var(--green)}
+.pbtn:hover{background:var(--green-d);border-color:var(--green-d)}
+.pbtn.ghost{background:#fff;color:var(--green)}
+.pbtn.ghost:hover{background:#EEF4FF}
+.pbtn.sq{border-radius:6px;background:var(--blue2);border-color:var(--blue2)}
+.pbtn.sq:hover{background:#244C8C;border-color:#244C8C}
+.pbtn:disabled{background:#9EB4D8;border-color:#9EB4D8}
+.lnk{color:var(--blue2)}
+.heroCard,.talk,.tm,.apptSum{background:var(--warm)}
+.siCard{border-color:#D5D7DA}
+.ph1{font-weight:400}
+.ph2{font-weight:400}
+.opt{border-color:#D5D7DA}
+.opt.rec{border-color:#3B4043}.recBar{background:#3B4043}
+.optL{background:#F5F8FC}
+.cmpT td:not(:first-child){background:#F5F8FC}
+.ck{border-color:#3B4043}
+.logoBox{color:var(--green)}
+.logoBox.xs{background:var(--green)}
+.av.xl .logoBox.xs{color:var(--green)}
+.num{background:var(--green)}
+.pfoot{background:#F7F7F5}
+.pfoot a{color:var(--blue2)}
+.plinks a:hover{color:var(--green)}
+.sibar{background:#EEF0F2}
+/* wizard */
+.prog{background:#D9DBDE}.prog i{background:linear-gradient(90deg,#7EEBD0,#3C9E80)}
+.chipq{border-color:#8D9296}
+.chipq:hover{border-color:var(--blue2)}
+.chipq.on{background:#EDFAF5;border-color:#2E8B6E;color:#1F2A2F;box-shadow:inset 0 0 0 1px #2E8B6E}
+.choice{border-color:#9AA0A4}.choice.on{border-color:#2E8B6E;background:#EFFAF6;box-shadow:inset 0 0 0 1.5px #2E8B6E}
+.cal button.on{background:#2B3033}
+.slotb{border-color:#2B3033}
+.prepCard{border-color:#D5D7DA}.prepCard:hover{border-color:var(--blue2)}
+.pulse:before,.pulse:after{border-color:#76E2C3}
+.matchList div:first-letter{color:#2E8B6E}
+/* entrances page */
+.gate{background:#F3F3EF;color:#1F2A2F}
+.gate h1{text-transform:none;font-weight:500;letter-spacing:-.02em}
+.gate p.lead{color:#3E4A50}
+.gate .rule{background:var(--green)}
+.chips span{border-color:#C9CDD2;color:#1F2A2F;background:#fff}
+.door{border:1px solid #D5D7DA;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+.door .u{color:var(--blue2)}
+/* app shell: light sidebar like TurboTax tax home */
+.side{background:#F4F4F1;color:#1F2A2F;border-right:1px solid #E4E4E0}
+.side .brand{color:#1F2A2F}
+.side .brand small{color:var(--muted)}
+.side .brand .logoBox{border:1px solid var(--line)}
+.nav{color:#3A464C}
+.nav:hover{background:#EAEAE6}
+.nav.on{background:#fff;color:#1F2A2F;box-shadow:inset 3px 0 0 var(--green)}
+.nav .ct{background:var(--green);color:#fff}
+.side .foot{border-top-color:#E0E0DB;color:var(--muted)}
+.tst.on .tdot{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 0 0 5px rgba(35,108,255,.15)}
+.tst.done .tdot{background:#2E8B6E;border-color:#2E8B6E}
+.tbar.done{background:#2E8B6E}
+.meter i{background:linear-gradient(90deg,#7EEBD0,#3C9E80)}
+th{background:#F4F4F1}
+.tab.on{color:var(--ink);border-bottom-color:var(--green)}
+.upl{border-color:#BFD3FF;background:#F7FAFF}
+.slots button.on{background:#2B3033;border-color:#2B3033}
+.kpi{border-radius:18px}
+@media(max-width:760px){.side{border-right:0;border-bottom:1px solid #E4E4E0}.nav.on{box-shadow:inset 0 -3px 0 var(--green)}}
 </style>
 </head>
 <body>
@@ -294,7 +378,7 @@ pre.csv{background:#fff;border:1px solid var(--line);border-radius:9px;padding:1
 <script>
 {
 /* ================== CONSTANTS ================== */
-const KEY='mtcp_beta_v4';
+const KEY='mtcp_beta_v5';
 const AUTO_MS=30*60*1000;          // 30 minutes after a complete submission → In preparation
 const REMIND_MS=3*24*3600*1000;    // reminder cooldown: 3 days
 const DAY=24*3600*1000;
@@ -382,7 +466,7 @@ function seed(){
   const ashley=mk({email:'ashley@example.com',agent:'a2',status:'single',age:20,tp:{first:'Ashley',last:'Moore',ssn:enc('723456789'),dob:'1998-12-01',phone:'(346) 555-0114',occupation:'Server'}});
   full(ashley,[['W-2','w2-restaurant.pdf'],['1095-A (Marketplace)','1095a.pdf']]);ashley.info.marketplace='yes';setStage(ashley,3,8);ashley.result='correction';ashley.lastContact=now()-5*DAY;ashley.nextFollow=now()+2*DAY;
 
-  return {settings:{name:'Bright Path Tax',initials:'BP',color:'#1F4A35',domain:'portal.brightpathtax.com',hours:'Mon–Sat, 9 AM–6 PM',reward:'$25',phone:'(713) 555-0100',price0:'$149',price1:'$199',price2:'$299'},
+  return {settings:{name:'Bright Path Tax',initials:'BP',color:'#236CFF',domain:'portal.brightpathtax.com',hours:'Mon–Sat, 9 AM–6 PM',reward:'$25',phone:'(713) 555-0100',price0:'$149',price1:'$199',price2:'$299'},
     agents,clients:[maria,james,sofia,robert,jorge,linda,kevin,ashley],
     notes:[{id:uid(),to:'office',t:'Kevin Brooks submitted a complete portal',at:kevin.submittedAt,read:false},{id:uid(),to:'office',t:'Maria Lopez requested an appointment',at:now()-DAY,read:false},{id:uid(),to:'office',t:'New message from Jorge Ramírez',at:now()-3600e3,read:false}],
     session:null};
@@ -460,7 +544,7 @@ function gate(){const st=S.settings;return `<div class="gate">${logo()}<h1>My Ta
     <button class="door" data-act="go" data-s="officeLogin"><h3>Back office</h3><div class="u">${esc(st.domain)}/office-login</div><p>You, the administrator. Every client, agent, report and setting.</p></button>
     <button class="door" data-act="go" data-s="agentLogin"><h3>Agent workspace</h3><div class="u">${esc(st.domain)}/agent-login</div><p>Your agents. Each sees only their own assigned clients.</p></button>
   </div>
-  <p class="small" style="margin-top:26px;color:#BFCBC1">For tax offices of any size, from one preparer to a team of agents · <a href="#" data-act="go" data-s="trust" style="color:var(--gold)">Trust Center</a></p></div>`;}
+  <p class="small" style="margin-top:26px;color:#5E6A72">For tax offices of any size, from one preparer to a team of agents · <a href="#" data-act="go" data-s="trust" style="color:var(--gold)">Trust Center</a></p></div>`;}
 
 function clientLogin(){const st=UI.authStep;
   let body='';
@@ -685,7 +769,7 @@ function reports(cl){const R=[['missing','Missing documents','Exactly what each 
 function agentsTab(){return `<div class="tw"><table><tr><th>Agent</th><th>Email</th><th>Status</th><th class="num">Clients</th><th>Actions</th></tr>${S.agents.map(a=>`<tr><td><b>${esc(a.name)}</b></td><td>${esc(a.email)}</td><td>${a.active?'<span class="pill ok">Active</span>':'<span class="pill gray">Paused</span>'}</td><td class="num">${S.clients.filter(c=>c.agentId===a.id).length}</td>
   <td><div class="row"><button class="btn ghost sm" data-act="agPause" data-id="${a.id}">${a.active?'Pause access':'Restore access'}</button><button class="btn ghost sm" data-act="agPass" data-id="${a.id}">Reset password</button><button class="btn ghost sm" data-act="agMove" data-id="${a.id}">Reassign clients</button></div></td></tr>`).join('')}</table></div>
   <div class="card"><h3>Create agent account</h3><p class="small muted">Only the administrator can create agents. Each agent sees only their own clients.</p><div class="grid3"><label class="f">Full name<input class="i" id="agName"></label><label class="f">Email<input class="i" id="agEmail" type="email"></label><div style="display:flex;align-items:flex-end"><button class="btn" data-act="agAdd">Create agent</button></div></div></div>`;}
-function settingsTab(){const st=S.settings;const sw=['#1F4A35','#1D3A5F','#5B2A4E','#7A3B1D','#2B2B2B','#0F5E63'];
+function settingsTab(){const st=S.settings;const sw=['#236CFF','#2F5DA8','#1F4A35','#5B2A4E','#2B2B2B','#0F5E63'];
   return `<div class="card"><h2>Your brand</h2><p class="muted small">Your business name, logo, colors and website address. No outside branding.</p><div class="grid2">
   <label class="f">Business name<input class="i" data-s="name" value="${esc(st.name)}"></label><label class="f">Logo initials (upload a logo file in production)<input class="i" data-s="initials" maxlength="3" value="${esc(st.initials)}"></label>
   <label class="f">Your website address<input class="i" data-s="domain" value="${esc(st.domain)}"></label><label class="f">Office hours shown to clients<input class="i" data-s="hours" value="${esc(st.hours)}"></label>
