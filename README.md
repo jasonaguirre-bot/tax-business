@@ -1,6 +1,6 @@
-# My Tax Client Portal — Beta prototype
+# Houston Tax Associates — Client Portal (Beta prototype)
 
-White-label client portal for tax offices (sample brand: Bright Path Tax).
+White-label client portal for tax offices (sample brand: Houston Tax Associates LLC).
 
 **Live demo:** https://jasonaguirre-bot.github.io/tax-business/
 
